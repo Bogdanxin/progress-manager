@@ -1,4 +1,4 @@
-package com.softlab.progressmanager.commen;
+package com.softlab.progressmanager.common;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -12,15 +12,15 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 public class RestData {
 
     /**
+     * 0=操作成功  1=操作失败
+     */
+    private int code;
+
+     /**
      * 传递操作信息
      */
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String message;
-
-    /**
-     * 0=操作成功  1=操作失败
-     */
-    private int code;
 
     /**
      * 传递实体
@@ -36,6 +36,33 @@ public class RestData {
     public RestData(Object data){
         this.code = 0;
         this.message = "success!";
+        this.data = data;
+    }
+
+    /**
+     * 千万不要忘记加上get和set方法
+     */
+    public int getCode() {
+        return code;
+    }
+
+    public void setCode(int code) {
+        this.code = code;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public Object getData() {
+        return data;
+    }
+
+    public void setData(Object data) {
         this.data = data;
     }
 }

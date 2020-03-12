@@ -1,4 +1,4 @@
-package com.softlab.progressmanager.commen.utils;
+package com.softlab.progressmanager.common.utils;
 
 import com.softlab.progressmanager.core.mapper.UserMapper;
 import com.softlab.progressmanager.core.model.User;

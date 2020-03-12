@@ -23,14 +23,14 @@ public interface UserMapper {
      * @param userId
      * @return
      */
-    public int deleteUserById(int userId);
+    int deleteUserById(int userId);
 
     /**
      * 添加一个用户，用于注册
      * @param user
      * @return
      */
-    public int insertUser(User user);
+    int insertUser(User user);
 
     /**
      * 修改指定id的用户信息，不建议使用这个，修改不清晰
@@ -38,29 +38,29 @@ public interface UserMapper {
      * @param user
      * @return
      */
-    public int updateUserById(@Param("userId") int userId,
-                              @Param("user") User user);
+    int updateUserById(@Param("userId") int userId,
+                       @Param("user") User user);
 
     /**
      * 查找指定id的用户信息
      * @param userId
      * @return
      */
-    public User selectUserById(int userId);
+    User selectUserById(int userId);
 
     /**
      * 根据不同条件查找用户信息
      * @param user
      * @return
      */
-    public List<User> selectUsersByCondition(User user);
+    List<User> selectUsersByCondition(User user);
 
     /**
      * 将用户的token置空，用于退出登录
      * @param userId
      * @return
      */
-    public int updateTokenNullById(int userId);
+    int updateTokenNullById(int userId);
 
     /**
      * 查找指定teacherId和password的用户，用于登录
@@ -68,8 +68,8 @@ public interface UserMapper {
      * @param teacherId
      * @return
      */
-    public User selectUserByPasswordAndId(@Param("password") String password,
-                                          @Param("teacherId") int teacherId);
+    User selectUserByPasswordAndId(@Param("password") String password,
+                                   @Param("teacherId") int teacherId);
 
     /**
      * 根据token查找用户，一般情况都是只有一个，
@@ -77,5 +77,5 @@ public interface UserMapper {
      * @param token
      * @return
      */
-    public User selectUserByToken(String token);
+    User selectUserByToken(String token);
 }

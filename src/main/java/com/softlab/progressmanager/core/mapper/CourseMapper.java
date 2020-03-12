@@ -23,14 +23,14 @@ public interface CourseMapper {
      * @param course
      * @return
      */
-    public int insertCourse(Course course);
+    int insertCourse(Course course);
 
     /**
      * 删除指定id的课程
      * @param courseId
      * @return
      */
-    public int deleteCourseById(int courseId);
+    int deleteCourseById(int courseId);
 
     /**
      * 修改指定id的课程
@@ -38,41 +38,50 @@ public interface CourseMapper {
      * @param course
      * @return
      */
-    public int updateCourseById(@Param("courseId") int courseId,
-                                @Param("course") Course course);
+    int updateCourseById(@Param("courseId") int courseId,
+                         @Param("course") Course course);
 
     /**
      * 查找指定id的课程
      * @param courseId
      * @return
      */
-    public Course selectCourseById(int courseId);
+    Course selectCourseById(int courseId);
 
     /**
      * 查找符合不同条件的课程
      * @param course
      * @return
      */
-    public List<Course> selectCourseByCondition(Course course);
+    List<Course> selectCourseByCondition(Course course);
 
     /**
      * 查看指定id的进程
      * @param courseId
      * @return
      */
-    public int calculateProgressById(int courseId);
+    int calculateProgressById(int courseId);
 
     /**
      * 查看指定id的课程视频进度
      * @param courseId
      * @return
      */
-    public String selectVideoProgress(int courseId);
+    String selectVideoProgress(int courseId);
 
     /**
      * 查找指定用户id的所有课程
      * @param userId
      * @return
      */
-    public List<Course> selectCourseByUserId(int userId);
+    List<Course> selectCourseByUserId(int userId);
+
+    /**
+     * 修改课时进度
+     * @param increaseHours
+     * @param courseId
+     * @return
+     */
+    int updateFinishHours(@Param("increaseHours") int increaseHours,
+                          @Param("courseId") int courseId);
 }

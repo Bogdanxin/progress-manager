@@ -1,4 +1,4 @@
-package com.softlab.progressmanager.commen;
+package com.softlab.progressmanager.common;
 
 /**
  * @author gwx

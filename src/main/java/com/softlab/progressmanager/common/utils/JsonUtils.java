@@ -1,8 +1,7 @@
-package com.softlab.progressmanager.commen.utils;
+package com.softlab.progressmanager.common.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.softlab.progressmanager.commen.ProException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

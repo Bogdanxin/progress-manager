@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.softlab.progressmanager.core.mapper.CourseMapper">
+    <resultMap id="Course" type="com.softlab.progressmanager.core.model.Course" >
+        <result property="courseId" column="cou_id"/>
+        <result property="courseName" column="cou_name"/>
+        <result property="courseVideoProgress" column="cou_video_progress"/>
+        <result property="courseHours" column="cou_hours"/>
+        <result property="courseFinishHours" column="cou_finish_hours"/>
+        <result property="userId" column="user_id"/>
+        <result property="createTime" column="cou_create_time"/>
+        <result property="courseIntroduction" column="cou_introduction"/>
+    </resultMap>
+
+    <insert id="insertCourse" parameterType="Course">
+        insert into courses
+        (cou_name, cou_introduction, cou_video_progress,
+         cou_hours, cou_finish_hours, user_id, cou_create_time)
+        values
+        (#{courseName}, #{courseIntroduction},
+         #{courseVideoProgress}, #{courseHours},
+         #{courseFinishHours},#{userId}, #{createTime})
+    </insert>
+
+    <delete id="deleteCourseById">
+        delete from courses
+        where cou_id = #{courseId}
+    </delete>
+
+    <update id="updateCourseById">
+        update courses
+        <set>
+            <if test="course.courseName != null and '' != course.courseName">
+                cou_name = #{course.courseName},
+            </if>
+            <if test="course.courseVideoProgress != null and '' != course.courseVideoProgress">
+                cou_video_progress = #{course.courseVideoProgress},
+            </if>
+            <if test="course.courseHours != null">
+                cou_hours = #{course.courseHours},
+            </if>
+            <if test="course.courseFinishHours != null and '' != course.courseFinishHours">
+                cou_finish_hours = #{course.courseFinishHours},
+            </if>
+            <if test="course.userId != null">
+                user_id = #{course.userId},
+            </if>
+            <if test="course.createTime != null and '' != course.createTime">
+                cou_create_time = #{course.createTime},
+            </if>
+            <if test="course.courseIntroduction != null and '' != course.courseIntroduction">
+                cou_introduction = #{course.courseIntroduction}
+            </if>
+        </set>
+        where cou_id = #{courseId}
+    </update>
+
+    <select id="selectCourseById" resultMap="Course">
+        select *
+        from courses
+        where cou_id = #{courseId}
+    </select>
+
+    <select id="selectCourseByCondition" resultMap="Course">
+        select *
+        from courses
+        <where>
+            <if test="coursesId != null">
+                and cou_id = #{courseId}
+            </if>
+            <if test="courseName != null and '' != courseName">
+                and cou_name = #{courseName}
+            </if>
+            <if test="userId != null and '' != userId">
+                and user_id = #{userId}
+            </if>
+        </where>
+    </select>
+
+    <select id="calculateProgressById">
+        select (cou_finish_hours / cou_hours)
+        from courses
+        where cou_id = #{courseId}
+    </select>
+
+    <select id="selectVideoProgress">
+        select cou_video_progress
+        from courses
+        where cou_id = #{courseId}
+    </select>
+
+    <select id="selectCourseByUserId" resultMap="Course">
+        select *
+        from courses
+        where user_id = #{userId}
+    </select>
+
+    <update id="updateFinishHours">
+        update courses
+        cou_finish_hours = cou_finish_hours + #{increaseHours}
+        where cou_id = #{courseId}
+    </update>
+</mapper>

@@ -1,4 +1,4 @@
-package com.softlab.progressmanager.commen.utils;
+package com.softlab.progressmanager.common.utils;
 
 import com.softlab.progressmanager.core.mapper.UserMapper;
 import com.softlab.progressmanager.core.model.User;
@@ -24,7 +24,7 @@ public class VerifyUtil {
         VerifyUtil.userMapper = userMapper;
     }
 
-    public int verifyUserType(HttpServletRequest request){
+    public static int verifyUserType(HttpServletRequest request){
         String token = request.getHeader("token");
 
         User user = userMapper.selectUserByToken(token);
