@@ -63,7 +63,7 @@ public interface CourseService {
      * @return
      * @throws ProException
      */
-    int calculateProgressById(int courseId) throws ProException;
+    float calculateProgressById(int courseId) throws ProException;
 
     /**
      * 查看视频上传进度

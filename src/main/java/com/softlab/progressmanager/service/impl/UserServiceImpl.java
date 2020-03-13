@@ -41,6 +41,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public RestData insertUser(User user) throws ProException {
+        if (userMapper.selectUsersByTeacherId(user.getTeacherId()).size() != 0) {
+            return new RestData(1,"输入为重复的教师id！");
+        }
+
         if (userMapper.insertUser(user) > 0) {
             return new RestData(0,"添加成功！");
         }else {

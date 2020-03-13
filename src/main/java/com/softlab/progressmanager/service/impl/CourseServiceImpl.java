@@ -100,8 +100,9 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public int calculateProgressById(int courseId) throws ProException {
-        int progress = courseMapper.calculateProgressById(courseId);
+    public float calculateProgressById(int courseId) throws ProException {
+        float progress = courseMapper.calculateProgressById(courseId);
+
         if (progress >= 0) {
             return progress;
         }else {

@@ -78,4 +78,11 @@ public interface UserMapper {
      * @return
      */
     User selectUserByToken(String token);
+
+    /**
+     * 根据teacherId获取查看
+     * @param teacherId
+     * @return
+     */
+    List<User> selectUsersByTeacherId(int teacherId);
 }

@@ -77,13 +77,13 @@
         </where>
     </select>
 
-    <select id="calculateProgressById">
+    <select id="calculateProgressById" resultType="FLOAT">
         select (cou_finish_hours / cou_hours)
         from courses
         where cou_id = #{courseId}
     </select>
 
-    <select id="selectVideoProgress">
+    <select id="selectVideoProgress" resultType="STRING">
         select cou_video_progress
         from courses
         where cou_id = #{courseId}
@@ -97,7 +97,7 @@
 
     <update id="updateFinishHours">
         update courses
-        cou_finish_hours = cou_finish_hours + #{increaseHours}
+        set cou_finish_hours = cou_finish_hours + #{increaseHours}
         where cou_id = #{courseId}
     </update>
 </mapper>

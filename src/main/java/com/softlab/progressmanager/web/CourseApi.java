@@ -82,7 +82,7 @@ public class CourseApi {
         logger.info("get calculation progress by id : " + id);
 
         try {
-            return new RestData(courseService.calculateProgressById(id));
+            return new RestData(courseService.calculateProgressById(id)*100 + "%");
         }catch (ProException ex){
             return new RestData(1, ex.getMessage());
         }

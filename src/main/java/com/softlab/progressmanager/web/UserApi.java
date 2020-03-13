@@ -46,7 +46,7 @@ public class UserApi {
         }
     }
 
-    @PostMapping(value = "/addUser")
+    @PostMapping(value = "/registered")
     public RestData addUser(@RequestBody User user){
         logger.info("add user :" + JsonUtils.getJsonFromObj(user));
         try {
@@ -89,6 +89,5 @@ public class UserApi {
             return new RestData(1, ex.getMessage());
         }
     }
-
 
 }

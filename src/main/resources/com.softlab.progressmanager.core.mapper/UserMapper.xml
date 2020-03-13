@@ -20,8 +20,8 @@
         (teacher_id, user_name, user_password,
         user_academy, user_token, user_type)
         value
-        (#{teacherId}, #{userName}, #{userPassword},
-        #{userAcademy}, #{token}, #{userType})
+        (#{teacherId}, #{userName}, #{password},
+        #{userAcademy}, #{token}, 0)
     </insert>
 
     <update id="updateUserById">
@@ -83,5 +83,9 @@
 
     <select id="selectUserByToken" resultMap="User">
         select * from users where user_token = #{token}
+    </select>
+
+    <select id="selectUsersByTeacherId" resultMap="User">
+        select * from users where teacher_id = #{teacherId}
     </select>
 </mapper>

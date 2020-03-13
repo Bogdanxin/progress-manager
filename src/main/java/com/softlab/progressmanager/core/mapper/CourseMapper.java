@@ -1,6 +1,7 @@
 package com.softlab.progressmanager.core.mapper;
 
 import com.softlab.progressmanager.core.model.Course;
+import com.softlab.progressmanager.core.model.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -60,7 +61,7 @@ public interface CourseMapper {
      * @param courseId
      * @return
      */
-    int calculateProgressById(int courseId);
+    float calculateProgressById(int courseId);
 
     /**
      * 查看指定id的课程视频进度
