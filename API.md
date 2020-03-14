@@ -3,13 +3,13 @@
 ## Tips：
 
 * url ： host + uri
-  * example :
+  * exampl :
     + host : http://182.92.121.195:8080/
     + uri : /login
     + url : http://182.92.121.195:8080/login
 
 ## 1.User
-e
+
 
 
 ### 1.1 注册
@@ -59,7 +59,18 @@ e
 
 ### 1.3 登录
 
-* GET  /login?teacherId=1234354&password=123
+* GET  /login
+
+* payload：
+
+  ```json
+  {
+      "teacherId":13434,
+      "password":"sdfasdfsdf"
+  }
+  ```
+
+  
 
 * return:
 
@@ -194,7 +205,7 @@ e
 
 ### 2.4 获得指定id的课程信息
 
-* POST  /getCourseById?id=1
+* GET  /getCourseById?id=1
 
 * return
 
@@ -251,9 +262,9 @@ e
 
 
 
-###　2.7 更新课程进度
+### 2.7 更新课时进度
 
-* GET  /updateHours/1?increaseHours=4
+* POST  /updateHours/1?increaseHours=4
 
 * return
 
@@ -261,6 +272,175 @@ e
   {
       "code": 0,
       "message": "修改成功！"
+  }
+  ```
+
+
+
+
+## 3. 签到
+
+### 3.1 添加一个某个时间的未签到事件
+
+**注意：这里只能添加一个未签到，之后实现多个添加**
+
+后端会处理：如果传入的学生id不存在，报错：“不存在该学生信息，请先添加学生信息”，如果课程信息不存在，报错：“不存在该课程信息，请先添加该课程信息”
+
+* POST  /addAbsence
+
+* payload:
+
+  ```json
+  {
+  	"studentId":2018214505,
+  	"courseId":2,
+  	"createTime":"2020-3-15"
+  }
+  ```
+
+* return:
+
+  ```json
+  {
+      "code": 1,
+      "message": "不存在该课程信息！请先添加该课程信息！"
+  }
+  ```
+
+### 3.2 删除一个签到记录，
+
+同时使该记录的学生的未签到记录减一
+
+* DELETE  /deleteAbsence?courseId=1&studentId=2018214505
+
+* return：
+
+  ```json
+  {
+      "code": 0,
+      "message": "修改成功！"
+  }
+  ```
+
+
+
+### 3.3 获取某个时间点的课程签到情况
+
+**仔细想有问题的，只能确定某日的，到具体时间就完了**
+
+* GET  /getAbsence?id=1&date=2020-3-15
+
+* return:
+
+  ```json
+  {
+      "code": 0,
+      "message": "success!",
+      "data": {
+          "createTime": "2020-03-15",
+          "studentId0": 2018214505,
+          "studentId1": 2018242434,
+          "absenceStudentNum": 2
+      }
+  }
+  ```
+
+  **这里返回值有该签到的时间、未签到人数和未签到的id，id形式为 student+数字**
+
+### 3.4 获取指定某天的签到
+
+**指的是某一天所有的签到**
+
+* GET  /getAbsenceByDate?date=2020-3-15
+
+* return：
+
+  ```json
+  {
+      "code": 0,
+      "message": "success!",
+      "data": [
+          {
+              "studentId": 2018214505,
+              "courseId": 1
+          },
+          {
+              "studentId": 2018242434,
+              "courseId": 1
+          }
+      ]
+  }
+  ```
+
+  **这里有问题的是：我暂时没想将相同课程id的信息合并到一起的方法，所以暂时返回json是这样的**
+
+## 4.学生
+
+### 4.1 添加一个学生（无法批量添加，不会）
+
+* POST  /addStudent
+
+* payload：
+
+  ```json
+  {
+  	"studentId":2018216585,
+  	"studentName":"张思"
+  }
+  ```
+
+* return:
+
+  ```json
+  {
+      "code": 0,
+      "message": "添加成功！"
+  }
+  ```
+
+
+
+### 4.2 删除指定id的学生
+
+**这个也有问题，就是一旦删除该学生、就应该相应签到也清除，这个还没有做到**
+
+* DELETE  /updateStudent?id=2018242434
+
+* payload
+
+  ```json
+  {
+  	"studentName":"张三",
+      "absenceTimes":3
+  }
+  ```
+
+* return:
+
+  ```json
+  {
+      "code": 0,
+      "message": "修改成功！"
+  }
+  ```
+
+  
+
+### 4.3 获取指定id的学生信息
+
+* GET　/getStudentById?id=2018214505
+
+* return:
+
+  ```json
+  {
+      "code": 0,
+      "message": "success!",
+      "data": {
+          "studentId": 2018214505,
+          "studentName": "bogdan",
+          "absenceTimes": 1
+      }
   }
   ```
 

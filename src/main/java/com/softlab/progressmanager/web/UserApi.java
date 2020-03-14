@@ -79,12 +79,12 @@ public class UserApi {
     }
 
     @GetMapping(value = "/login")
-    public RestData login(@Param("teacherId") int teacherId,
-                          @Param("password") String password){
-        logger.info("login by teacher id : " + teacherId);
+    public RestData login(@RequestBody User user){
+
+        logger.info("login by teacher id : " + user.getTeacherId());
 
         try {
-            return new RestData(userService.selectUserByPasswordAndId(password, teacherId));
+            return new RestData(userService.selectUserByPasswordAndId(user.getPassword(), user.getTeacherId()));
         }catch (ProException ex){
             return new RestData(1, ex.getMessage());
         }
