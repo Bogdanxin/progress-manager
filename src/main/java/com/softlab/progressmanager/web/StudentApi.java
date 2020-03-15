@@ -1,6 +1,5 @@
 package com.softlab.progressmanager.web;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.softlab.progressmanager.common.ProException;
 import com.softlab.progressmanager.common.RestData;
 import com.softlab.progressmanager.common.utils.JsonUtils;
@@ -10,6 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author gwx
@@ -37,6 +38,17 @@ public class StudentApi {
 
         try {
             return studentService.insertStudent(student);
+        }catch (ProException ex){
+            return new RestData(1, ex.getMessage());
+        }
+    }
+
+    @PostMapping(value = "/addStudents")
+    public RestData addStudents(@RequestBody List<Student> students){
+        logger.info("add students by list: " + JsonUtils.getJsonFromObj(students));
+
+        try {
+            return new RestData(studentService.insertStudents(students));
         }catch (ProException ex){
             return new RestData(1, ex.getMessage());
         }

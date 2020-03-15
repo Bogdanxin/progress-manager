@@ -8,7 +8,9 @@ import com.softlab.progressmanager.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -40,6 +42,27 @@ public class StudentServiceImpl implements StudentService {
         }else {
             throw new ProException("添加失败！");
         }
+    }
+
+    @Override
+    public List<Map<Integer, String>> insertStudents(List<Student> students) throws ProException {
+
+        List<Map<Integer, String>> al = new ArrayList<>();
+        for (Student student : students){
+            Map<Integer, String> map = new HashMap<>(1);
+            if (studentMapper.selectStudentById(student.getStudentId()) != null) {
+                map.put(student.getStudentId(), "该学生已经录入，无需再次记录。");
+                al.add(map);
+                continue;
+            }
+            if (studentMapper.insertStudent(student) > 0) {
+                map.put(student.getStudentId(), "录入成功！");
+            }else {
+                map.put(student.getStudentId(), "录入失败！");
+            }
+            al.add(map);
+        }
+        return al;
     }
 
     @Override

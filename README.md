@@ -376,7 +376,7 @@
 
 ## 4.学生
 
-### 4.1 添加一个学生（无法批量添加，不会）
+### 4.1 添加一个学生
 
 * POST  /addStudent
 
@@ -441,6 +441,54 @@
           "studentName": "bogdan",
           "absenceTimes": 1
       }
+  }
+  ```
+
+
+
+### 4.4 批量添加学生信息
+
+* POST  /addStudents
+
+* payload:
+
+  ```json
+  [
+      {
+  		"studentId":2018214505,
+  		"studentName":"张三"
+  	},
+  	{
+  		"studentId":2018234567,
+  		"studentName":"李四"
+  	},
+  	{
+  		"studentId":2019234678,
+  		"studentName":"bogdan"
+  	}
+  ]
+  	
+  ```
+
+* return：
+
+  这里我会传过来每个学号的相应的添加信息，根据学号对应返回信息好了，下面就是所有的三种情况
+
+  ```json
+  {
+      "code": 0,
+      "message": "success!",
+      "data": [
+          {
+              "2018214505": "该学生已经录入，无需再次记录。"
+          },
+          {
+              "2018234567": "该学生已经录入"
+          },
+          {
+              "2019234678": "录入失败"
+          }
+      ]
   }
   ```
 
