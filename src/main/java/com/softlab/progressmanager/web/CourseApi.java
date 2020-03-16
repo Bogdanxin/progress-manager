@@ -3,12 +3,15 @@ package com.softlab.progressmanager.web;
 import com.softlab.progressmanager.common.ProException;
 import com.softlab.progressmanager.common.RestData;
 import com.softlab.progressmanager.common.utils.JsonUtils;
+import com.softlab.progressmanager.common.utils.VerifyUtil;
 import com.softlab.progressmanager.core.model.Course;
 import com.softlab.progressmanager.service.impl.CourseServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author gwx
@@ -30,8 +33,12 @@ public class CourseApi {
     }
 
     @PostMapping(value = "/addCourse")
-    public RestData addCourse(@RequestBody Course course){
+    public RestData addCourse(@RequestBody Course course, HttpServletRequest request){
         logger.info("add course: " + JsonUtils.getJsonFromObj(course));
+
+        if (VerifyUtil.verifyUserType(request) != 1) {
+            return new RestData(1,"用户未授权！");
+        }
 
         try {
             return courseService.insertCourse(course);
@@ -41,11 +48,11 @@ public class CourseApi {
     }
 
     @DeleteMapping(value = "/deleteCourseById")
-    public RestData deleteCourseById(@RequestParam("id") int id/*, HttpServletRequest request*/){
+    public RestData deleteCourseById(@RequestParam("id") int id, HttpServletRequest request){
         logger.info("delete course by id " + id);
-//        if (VerifyUtil.verifyUserType(request) != 1) {
-//            return new RestData(1,"用户未授权！");
-//        }
+        if (VerifyUtil.verifyUserType(request) != 1) {
+            return new RestData(1,"用户未授权！");
+        }
 
         try {
             return courseService.deleteCourseById(id);
@@ -56,9 +63,13 @@ public class CourseApi {
 
     @PostMapping(value = "/updateCourseById")
     public RestData updateCourseById(@RequestParam("id") int id,
-                                     @RequestBody Course course){
+                                     @RequestBody Course course,
+                                     HttpServletRequest request){
         logger.info("update course"+ JsonUtils.getJsonFromObj(course) + "by id : " + id);
 
+        if (VerifyUtil.verifyUserType(request) != 1) {
+            return new RestData(1,"用户未授权！");
+        }
         try {
             return courseService.updateCourseById(id, course);
         }catch (ProException ex){
@@ -112,8 +123,12 @@ public class CourseApi {
 
     @PostMapping(value = "/updateHours/{id}")
     public RestData updateHours(@RequestParam("increaseHours") int increaseHours,
-                                @PathVariable int id){
+                                @PathVariable int id,
+                                HttpServletRequest request){
         logger.info("update hours " + increaseHours);
+        if (VerifyUtil.verifyUserType(request) != 1) {
+            return new RestData(1,"用户未授权！");
+        }
 
         try {
             return courseService.updateFinishHours(increaseHours, id);

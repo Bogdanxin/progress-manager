@@ -85,4 +85,11 @@ public interface UserMapper {
      * @return
      */
     List<User> selectUsersByTeacherId(int teacherId);
+
+    /**
+     * 修改用户token
+     * @param user
+     * @return
+     */
+    int updateTokenByUser(User user);
 }

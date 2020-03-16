@@ -38,4 +38,8 @@
         WHERE cou_id = #{courseId}
         AND create_time = #{createTime}
     </select>
+
+    <delete id="deleteAbsenceByStudentId">
+        delete from absences where stu_id = #{studentId}
+    </delete>
 </mapper>

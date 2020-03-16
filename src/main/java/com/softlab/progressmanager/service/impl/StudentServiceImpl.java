@@ -2,6 +2,7 @@ package com.softlab.progressmanager.service.impl;
 
 import com.softlab.progressmanager.common.ProException;
 import com.softlab.progressmanager.common.RestData;
+import com.softlab.progressmanager.core.mapper.AbsenceMapper;
 import com.softlab.progressmanager.core.mapper.StudentMapper;
 import com.softlab.progressmanager.core.model.Student;
 import com.softlab.progressmanager.service.StudentService;
@@ -24,10 +25,12 @@ import java.util.Map;
 public class StudentServiceImpl implements StudentService {
 
     private final StudentMapper studentMapper;
+    private final AbsenceMapper absenceMapper;
 
     @Autowired
-    public StudentServiceImpl(StudentMapper studentMapper) {
+    public StudentServiceImpl(StudentMapper studentMapper, AbsenceMapper absenceMapper) {
         this.studentMapper = studentMapper;
+        this.absenceMapper = absenceMapper;
     }
 
 
@@ -67,7 +70,8 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public RestData deleteStudentById(int studentId) throws ProException {
-        if (studentMapper.deleteStudentById(studentId) > 0) {
+        if (studentMapper.deleteStudentById(studentId) > 0
+                && absenceMapper.deleteAbsenceByStudentId(studentId) > 0) {
             return new RestData(0,"删除成功!");
         }else {
             throw new ProException("删除失败！");

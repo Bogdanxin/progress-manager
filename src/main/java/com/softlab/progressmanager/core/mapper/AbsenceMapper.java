@@ -56,4 +56,11 @@ public interface AbsenceMapper {
      */
     int getStudentAbsenceNum(@Param("courseId") int courseId,
                              @Param("createTime") String date);
+
+    /**
+     * 删除指定id的学生的所有签到
+     * @param studentId
+     * @return
+     */
+    int deleteAbsenceByStudentId(int studentId);
 }

@@ -3,6 +3,7 @@ package com.softlab.progressmanager.web;
 import com.softlab.progressmanager.common.ProException;
 import com.softlab.progressmanager.common.RestData;
 import com.softlab.progressmanager.common.utils.JsonUtils;
+import com.softlab.progressmanager.common.utils.VerifyUtil;
 import com.softlab.progressmanager.core.model.Student;
 import com.softlab.progressmanager.service.StudentService;
 import org.slf4j.Logger;
@@ -10,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -55,9 +57,13 @@ public class StudentApi {
     }
 
     @DeleteMapping(value = "/deleteStudent")
-    public RestData deleteStudent(@RequestParam("id") int studentId){
+    public RestData deleteStudent(@RequestParam("id") int studentId,
+                                  HttpServletRequest request){
         logger.info("delete student by id:" + studentId);
 
+        if (VerifyUtil.verifyUserType(request) != 1) {
+            return new RestData(1,"用户未授权！");
+        }
         try {
             return studentService.deleteStudentById(studentId);
         }catch (ProException ex){
@@ -67,8 +73,12 @@ public class StudentApi {
 
     @PostMapping(value = "/updateStudent")
     public RestData updateStudentById(@RequestParam("id") int studentId,
-                                      @RequestBody Student student){
+                                      @RequestBody Student student,
+                                      HttpServletRequest request){
         logger.info("update student by id : " + studentId);
+        if (VerifyUtil.verifyUserType(request) != 1) {
+            return new RestData(1,"用户未授权！");
+        }
 
         try {
             return studentService.updateStudentById(studentId, student);

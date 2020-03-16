@@ -2,9 +2,11 @@ package com.softlab.progressmanager.service.impl;
 
 import com.softlab.progressmanager.common.ProException;
 import com.softlab.progressmanager.common.RestData;
+import com.softlab.progressmanager.common.utils.TokenUtils;
 import com.softlab.progressmanager.core.mapper.UserMapper;
 import com.softlab.progressmanager.core.model.User;
 import com.softlab.progressmanager.service.UserService;
+import jdk.nashorn.internal.parser.Token;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -116,10 +118,14 @@ public class UserServiceImpl implements UserService {
         Map<String, Object> map = new HashMap<>(4);
         User user = userMapper.selectUserByPasswordAndId(password, teacherId);
         if (user != null) {
-            map.put("userId", user.getUserId());
-            map.put("userName", user.getUserName());
-            map.put("token", user.getToken());
-            map.put("userType", user.getUserType());
+            //设置随机的、唯一的token保存到数据库种
+            user.setToken(TokenUtils.getToken());
+            if (userMapper.updateTokenByUser(user) > 0) {
+                map.put("userId", user.getUserId());
+                map.put("userName", user.getUserName());
+                map.put("token", user.getToken());
+                map.put("userType", user.getUserType());
+            }
         }else {
             throw new ProException("密码或账号错误！");
         }

@@ -3,12 +3,15 @@ package com.softlab.progressmanager.web;
 import com.softlab.progressmanager.common.ProException;
 import com.softlab.progressmanager.common.RestData;
 import com.softlab.progressmanager.common.utils.JsonUtils;
+import com.softlab.progressmanager.common.utils.VerifyUtil;
 import com.softlab.progressmanager.core.model.Absence;
 import com.softlab.progressmanager.service.AbsenceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -32,8 +35,12 @@ public class AbsenceApi {
     }
 
     @PostMapping(value = "/addAbsence")
-    public RestData addAbsence(@RequestBody Absence absence){
+    public RestData addAbsence(@RequestBody Absence absence, HttpServletRequest request){
         logger.info("add absence :" + JsonUtils.getJsonFromObj(absence));
+
+        if (VerifyUtil.verifyUserType(request) != 1) {
+            return new RestData(1, "用户未授权！");
+        }
 
         try {
             return absenceService.insertAbsence(absence);
@@ -44,8 +51,13 @@ public class AbsenceApi {
 
     @DeleteMapping(value = "/deleteAbsence")
     public RestData deleteAbsence(@RequestParam("courseId") int courseId,
-                                  @RequestParam("studentId") int studentId){
+                                  @RequestParam("studentId") int studentId,
+                                  HttpServletRequest request){
         logger.info("delete absence by course id: " + courseId + "and student id :" + studentId);
+
+        if (VerifyUtil.verifyUserType(request) != 1) {
+            return new RestData(1,"用户未授权！");
+        }
 
         try {
             return absenceService.deleteAbsence(studentId, courseId);
@@ -56,8 +68,12 @@ public class AbsenceApi {
 
     @GetMapping(value = "/getAbsence")
     public RestData getAbsence(@RequestParam("id") int courseId,
-                               @RequestParam("date") String date){
+                               @RequestParam("date") String date,
+                               HttpServletRequest request){
         logger.info("get absence by course id :" + courseId);
+        if (VerifyUtil.verifyUserType(request) != 1) {
+            return new RestData(1,"用户未授权！");
+        }
 
         try {
             return new RestData(absenceService.selectCourseAbsenceById(courseId,date));
@@ -67,8 +83,12 @@ public class AbsenceApi {
     }
 
     @GetMapping(value = "/getAbsenceByDate")
-    public RestData getAbsenceByDate(@RequestParam("date") String date){
+    public RestData getAbsenceByDate(@RequestParam("date") String date,
+                                     HttpServletRequest request){
         logger.info("get absence by date : " + date);
+        if (VerifyUtil.verifyUserType(request) != 1) {
+            return new RestData(1,"用户未授权！");
+        }
 
         try {
             return new RestData(absenceService.selectAbsenceByDate(date));

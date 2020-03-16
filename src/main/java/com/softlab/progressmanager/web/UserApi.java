@@ -3,6 +3,8 @@ package com.softlab.progressmanager.web;
 import com.softlab.progressmanager.common.ProException;
 import com.softlab.progressmanager.common.RestData;
 import com.softlab.progressmanager.common.utils.JsonUtils;
+import com.softlab.progressmanager.common.utils.TokenUtils;
+import com.softlab.progressmanager.common.utils.VerifyUtil;
 import com.softlab.progressmanager.core.model.User;
 import com.softlab.progressmanager.service.impl.UserServiceImpl;
 import org.apache.ibatis.annotations.Param;
@@ -10,6 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author gwx
@@ -32,12 +36,12 @@ public class UserApi {
     }
 
     @DeleteMapping(value = "/deleteUserById")
-    public RestData deleteUserById(@RequestParam("id") int id/*, HttpServletRequest request*/){
+    public RestData deleteUserById(@RequestParam("id") int id, HttpServletRequest request){
         logger.info("delete user by id : " + id);
 
-//        if (VerifyUtil.verifyUserType(request) != 1) {
-//            return new RestData(1,"用户未授权！");
-//        }
+        if (VerifyUtil.verifyUserType(request) != 1) {
+            return new RestData(1,"用户未授权！");
+        }
 
         try {
             return userService.deleteUserById(id);
@@ -67,22 +71,22 @@ public class UserApi {
         }
     }
 
-    @PostMapping(value = "/exit/{id}")
-    public RestData exit(@PathVariable int id){
-        logger.info("exit user by id : " + id);
+    @PostMapping(value = "/exit/{token}")
+    public RestData exit(@PathVariable String token, HttpServletRequest request){
+        logger.info("exit user by token : " + token);
 
         try {
-            return userService.updateTokenNullById(id);
+            User user = TokenUtils.getUserByToken(request);
+            return userService.updateTokenNullById(user.getUserId());
         }catch (ProException ex){
             return new RestData(1, ex.getMessage());
         }
     }
 
-    @GetMapping(value = "/login")
+    @PostMapping(value = "/login")
     public RestData login(@RequestBody User user){
 
         logger.info("login by teacher id : " + user.getTeacherId());
-
         try {
             return new RestData(userService.selectUserByPasswordAndId(user.getPassword(), user.getTeacherId()));
         }catch (ProException ex){

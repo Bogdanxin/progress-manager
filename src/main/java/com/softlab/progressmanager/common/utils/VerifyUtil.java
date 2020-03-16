@@ -26,6 +26,9 @@ public class VerifyUtil {
 
     public static int verifyUserType(HttpServletRequest request){
         String token = request.getHeader("token");
+        if (token == null) {
+            return -1;
+        }
 
         User user = userMapper.selectUserByToken(token);
         if (user != null) {

@@ -36,7 +36,7 @@ public interface StudentService {
     List<Map<Integer, String>> insertStudents(List<Student> students) throws ProException;
 
     /**
-     * 删除指定id的学生
+     * 删除指定id的学生以及其相关的记录
      * @param studentId
      * @return
      * @throws ProException

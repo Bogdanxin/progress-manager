@@ -71,7 +71,7 @@
 
     <update id="updateTokenNullById">
         update users
-        set user_token = null
+        set user_token = ''
         where user_id = #{userId}
     </update>
 
@@ -88,4 +88,10 @@
     <select id="selectUsersByTeacherId" resultMap="User">
         select * from users where teacher_id = #{teacherId}
     </select>
+
+    <update id="updateTokenByUser">
+        update users
+        set user_token = #{token}
+        where user_id = #{userId}
+    </update>
 </mapper>
