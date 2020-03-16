@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 
 /**
@@ -38,7 +39,7 @@ public class AbsenceApi {
     public RestData addAbsence(@RequestBody Absence absence, HttpServletRequest request){
         logger.info("add absence :" + JsonUtils.getJsonFromObj(absence));
 
-        if (VerifyUtil.verifyUserType(request) != 1) {
+        if (VerifyUtil.verifyUserType(request) != 0) {
             return new RestData(1, "用户未授权！");
         }
 
@@ -47,6 +48,23 @@ public class AbsenceApi {
         }catch (ProException ex){
             return new RestData(1, ex.getMessage());
         }
+    }
+
+    @PostMapping(value = "/addAbsences")
+    public RestData addAbsences(@RequestBody List<Absence> absences,
+                                HttpServletRequest request){
+        logger.info("add absence : " + JsonUtils.getJsonFromObj(absences));
+
+        if (VerifyUtil.verifyUserType(request) != 0) {
+            return new RestData(1, "用户未授权！");
+        }
+
+        try {
+            return new RestData(absenceService.insertAbsences(absences));
+        }catch (ProException ex){
+            return new RestData(1, ex.getMessage());
+        }
+
     }
 
     @DeleteMapping(value = "/deleteAbsence")
@@ -71,7 +89,7 @@ public class AbsenceApi {
                                @RequestParam("date") String date,
                                HttpServletRequest request){
         logger.info("get absence by course id :" + courseId);
-        if (VerifyUtil.verifyUserType(request) != 1) {
+        if (VerifyUtil.verifyUserType(request) != 0) {
             return new RestData(1,"用户未授权！");
         }
 
@@ -86,7 +104,7 @@ public class AbsenceApi {
     public RestData getAbsenceByDate(@RequestParam("date") String date,
                                      HttpServletRequest request){
         logger.info("get absence by date : " + date);
-        if (VerifyUtil.verifyUserType(request) != 1) {
+        if (VerifyUtil.verifyUserType(request) != 0) {
             return new RestData(1,"用户未授权！");
         }
 

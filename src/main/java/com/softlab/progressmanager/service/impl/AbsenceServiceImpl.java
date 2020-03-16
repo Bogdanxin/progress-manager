@@ -59,6 +59,35 @@ public class AbsenceServiceImpl implements AbsenceService {
     }
 
     @Override
+    public List<Map<Integer, String>> insertAbsences(List<Absence> absences) throws ProException {
+        List<Map<Integer, String>> al = new ArrayList<>();
+        for (Absence absence : absences){
+            Map<Integer, String> map = new HashMap<>();
+            if (studentMapper.selectStudentById(absence.getStudentId()) == null) {
+                map.put(absence.getStudentId(), "该学生信息不存在，请先添加！");
+                al.add(map);
+                continue;
+            }
+            if (courseMapper.selectCourseById(absence.getCourseId()) == null) {
+                map.put(absence.getCourseId(), "该课程信息不存在，请先添加！");
+                al.add(map);
+                continue;
+            }
+
+            if (absenceMapper.insertAbsence(absence) > 0 &&
+                    studentMapper.absenceStudent(absence.getStudentId()) > 0){
+                map.put(absence.getStudentId(), "添加成功!");
+                map.put(absence.getCourseId(), "添加成功！");
+            }else {
+                map.put(absence.getCourseId(), "添加失败！");
+                map.put(absence.getStudentId(),"添加失败！");
+            }
+            al.add(map);
+        }
+        return al;
+    }
+
+    @Override
     public RestData deleteAbsence(int studentId, int courseId) throws ProException {
         //学生不存在，报错并要求添加该学生信息
         if (studentMapper.selectStudentById(studentId) == null) {

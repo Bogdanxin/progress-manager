@@ -48,7 +48,8 @@ public class CourseApi {
     }
 
     @DeleteMapping(value = "/deleteCourseById")
-    public RestData deleteCourseById(@RequestParam("id") int id, HttpServletRequest request){
+    public RestData deleteCourseById(@RequestParam("id") int id,
+                                     HttpServletRequest request){
         logger.info("delete course by id " + id);
         if (VerifyUtil.verifyUserType(request) != 1) {
             return new RestData(1,"用户未授权！");
@@ -67,7 +68,7 @@ public class CourseApi {
                                      HttpServletRequest request){
         logger.info("update course"+ JsonUtils.getJsonFromObj(course) + "by id : " + id);
 
-        if (VerifyUtil.verifyUserType(request) != 1) {
+        if (VerifyUtil.verifyUserType(request) != 0) {
             return new RestData(1,"用户未授权！");
         }
         try {
@@ -126,7 +127,7 @@ public class CourseApi {
                                 @PathVariable int id,
                                 HttpServletRequest request){
         logger.info("update hours " + increaseHours);
-        if (VerifyUtil.verifyUserType(request) != 1) {
+        if (VerifyUtil.verifyUserType(request) != 0) {
             return new RestData(1,"用户未授权！");
         }
 

@@ -10,9 +10,13 @@
 
 ## 1.User
 
+**tips：**
 
+* userType :  
+  + 0 = 注册用户，只能看到自己课程进展 
+  + 1 = 管理用户，能看到所有老师的课程进展和所有学生信息
 
-### 1.1 注册
+### 1.1 注册 *
 
 * POST  /registered
 
@@ -24,8 +28,8 @@
   	"userName":"李四",
   	"password":"1234567890qwe",
   	"userAcademy":"信息学院",
-  	"token":"fsdf2343sdfsdflj434jl",
-  	"userType":1
+  	"token":"",
+  	"userType":0
   }
   ```
 
@@ -38,11 +42,17 @@
   }
   ```
 
-  
+* ps：注册都是将用户的userType设置为0，特殊情况再说
 
-### 1.2 退出登录
+### 1.2 退出登录 *修改了
 
-* POST  /exit/{id}
+* POST  /exit/{token}
+
+* request中带有token，就是既在路径上有token，也要在request的header中带有token
+
+  例如：
+
+  <img src="C:\Users\公维信\AppData\Roaming\Typora\typora-user-images\image-20200316145116651.png" alt="image-20200316145116651"  />
 
 * return 
 
@@ -53,7 +63,6 @@
   }
   ```
 
-  目前这个方法不成熟，还不用做api
 
 
 
@@ -82,16 +91,18 @@
           "userType": 0,
           "userName": "张三",
           "userId": 2,
-          "token": null
+          "token": "8221ef60a5c84142ae58f8aaed6eca12"
       }
   }
   ```
 
 
 
-### 1.4 删除指定Id用户（一般用不到，需要request不会做）
+### 1.4 删除指定Id用户 *
 
 * DELETE  /deleteUserById?id=2
+
+* payload: request的header带有token，判断userType是否=1
 
 * return:
 
@@ -104,9 +115,11 @@
 
 
 
-### 1.5 获取指定id的用户信息
+### 1.5 获取指定id的用户信息 *
 
 * GET  /getUserById?id=3
+
+* request
 
 * return:
 
@@ -160,9 +173,11 @@
 
   
 
-### 2.2 删除指定id的课程
+### 2.2 删除指定id的课程 *
 
 * DELETE  /deleteCourseById?id=4
+
+* payload：token
 
 * return:
 
@@ -175,9 +190,11 @@
 
   
 
-### 2.3 修改指定id的课程信息
+### 2.3 修改指定id的课程信息 *
 
-* POST  /updateCourseById?id=1
+* POST  /updateCourseById?id=1 
+
+* token 这里的userType是0才可以，只能本课程的教师才能修改
 
 * payload:
 
@@ -264,7 +281,9 @@
 
 ### 2.7 更新课时进度
 
-* POST  /updateHours/1?increaseHours=4
+* POST  /updateHours/{id}?increaseHours=4
+
+* token userType只能是0，只能本人更改
 
 * return
 
@@ -277,10 +296,16 @@
 
 
 
+### 2.8 更新视频上传进程
+
+* 这个我们要再讨论一下，可以先放一下
+
+
+
 
 ## 3. 签到
 
-### 3.1 添加一个某个时间的未签到事件
+### 3.1 添加一个某个时间的未签到事件 *
 
 **注意：这里只能添加一个未签到，之后实现多个添加**
 
@@ -289,6 +314,8 @@
 * POST  /addAbsence
 
 * payload:
+
+  token和
 
   ```json
   {
@@ -307,11 +334,58 @@
   }
   ```
 
-### 3.2 删除一个签到记录，
+
+
+### 3.2 批量添加签到记录 *
+
+* POST  /addAbsences
+
+* payload:
+
+  request + 
+
+  ```json
+  [
+      {
+  		"courseId":14,
+  		"studentId":2018214505,
+  		"createTime":"2020-3-4"
+  	},
+      {
+  		"courseId":1,
+  		"studentId":2018234567,
+  		"createTime":"2020-3-5"
+  	}
+  ]
+  ```
+
+* return:
+
+  ```json
+  {
+      "code": 0,
+      "message": "success!",
+      "data": [
+          {
+              "14": "该课程信息不存在，请先添加！"
+          },
+          {
+              "1": "添加成功！",
+              "2018234567": "添加成功!"
+          }
+      ]
+  }
+  ```
+
+  
+
+### 3.3 删除一个签到记录  *
 
 同时使该记录的学生的未签到记录减一
 
 * DELETE  /deleteAbsence?courseId=1&studentId=2018214505
+
+* token userType = 1
 
 * return：
 
@@ -324,11 +398,13 @@
 
 
 
-### 3.3 获取某个时间点的课程签到情况
+### 3.4 获取某个时间点的课程签到情况 *
 
 **仔细想有问题的，只能确定某日的，到具体时间就完了**
 
 * GET  /getAbsence?id=1&date=2020-3-15
+
+* token 
 
 * return:
 
@@ -347,7 +423,7 @@
 
   **这里返回值有该签到的时间、未签到人数和未签到的id，id形式为 student+数字**
 
-### 3.4 获取指定某天的签到
+### 3.5 获取指定某天的签到 *
 
 **指的是某一天所有的签到**
 
@@ -380,6 +456,8 @@
 
 * POST  /addStudent
 
+* token
+
 * payload：
 
   ```json
@@ -402,9 +480,9 @@
 
 ### 4.2 删除指定id的学生
 
-**这个也有问题，就是一旦删除该学生、就应该相应签到也清除，这个还没有做到**
-
 * DELETE  /updateStudent?id=2018242434
+
+* token
 
 * payload
 
@@ -430,6 +508,8 @@
 
 * GET　/getStudentById?id=2018214505
 
+* token
+
 * return:
 
   ```json
@@ -446,9 +526,12 @@
 
 
 
+
 ### 4.4 批量添加学生信息
 
 * POST  /addStudents
+
+* token
 
 * payload:
 

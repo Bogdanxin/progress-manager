@@ -35,9 +35,13 @@ public class StudentApi {
     }
 
     @PostMapping(value = "/addStudent")
-    public RestData addStudent(@RequestBody Student student){
+    public RestData addStudent(@RequestBody Student student,
+                               HttpServletRequest request){
         logger.info("add student :" + JsonUtils.getJsonFromObj(student));
 
+        if (VerifyUtil.verifyUserType(request) != 1) {
+            return new RestData(1, "用户未授权！");
+        }
         try {
             return studentService.insertStudent(student);
         }catch (ProException ex){
@@ -46,8 +50,12 @@ public class StudentApi {
     }
 
     @PostMapping(value = "/addStudents")
-    public RestData addStudents(@RequestBody List<Student> students){
+    public RestData addStudents(@RequestBody List<Student> students,
+                                HttpServletRequest request){
         logger.info("add students by list: " + JsonUtils.getJsonFromObj(students));
+        if (VerifyUtil.verifyUserType(request) != 1) {
+            return new RestData(1, "用户未授权！");
+        }
 
         try {
             return new RestData(studentService.insertStudents(students));
@@ -88,8 +96,12 @@ public class StudentApi {
     }
 
     @GetMapping(value = "/getStudentById")
-    public RestData selectStudentById(@RequestParam("id") int studentId){
+    public RestData selectStudentById(@RequestParam("id") int studentId,
+                                      HttpServletRequest request){
         logger.info("get student by id :" + studentId);
+        if (VerifyUtil.verifyUserType(request) != 1) {
+            return new RestData(1, "用户未授权！");
+        }
 
         try {
             return new RestData(studentService.selectStudentById(studentId));

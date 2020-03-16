@@ -7,7 +7,6 @@ import com.softlab.progressmanager.common.utils.TokenUtils;
 import com.softlab.progressmanager.common.utils.VerifyUtil;
 import com.softlab.progressmanager.core.model.User;
 import com.softlab.progressmanager.service.impl.UserServiceImpl;
-import org.apache.ibatis.annotations.Param;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +35,8 @@ public class UserApi {
     }
 
     @DeleteMapping(value = "/deleteUserById")
-    public RestData deleteUserById(@RequestParam("id") int id, HttpServletRequest request){
+    public RestData deleteUserById(@RequestParam("id") int id,
+                                   HttpServletRequest request){
         logger.info("delete user by id : " + id);
 
         if (VerifyUtil.verifyUserType(request) != 1) {
@@ -61,8 +61,12 @@ public class UserApi {
     }
 
     @GetMapping(value = "/getUserById")
-    public RestData getUserById(@RequestParam("id") int id){
+    public RestData getUserById(@RequestParam("id") int id,
+                                HttpServletRequest request){
         logger.info("get user by id : "+id);
+        if (VerifyUtil.verifyUserType(request) != 1) {
+            return new RestData(1, "用户未授权！");
+        }
 
         try {
             return new RestData(userService.selectUserById(id));
@@ -72,9 +76,13 @@ public class UserApi {
     }
 
     @PostMapping(value = "/exit/{token}")
-    public RestData exit(@PathVariable String token, HttpServletRequest request){
+    public RestData exit(@PathVariable String token,
+                         HttpServletRequest request){
         logger.info("exit user by token : " + token);
 
+        if (VerifyUtil.verifyUserType(request) != 1) {
+            return new RestData(1,"用户未授权！");
+        }
         try {
             User user = TokenUtils.getUserByToken(request);
             return userService.updateTokenNullById(user.getUserId());

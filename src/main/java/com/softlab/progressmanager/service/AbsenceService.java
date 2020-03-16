@@ -25,6 +25,14 @@ public interface AbsenceService {
     RestData insertAbsence(Absence absence) throws ProException;
 
     /**
+     * 批量添加签到
+     * @param absences
+     * @return
+     * @throws ProException
+     */
+    List<Map<Integer, String>> insertAbsences(List<Absence> absences) throws ProException;
+
+    /**
      * 删除一个签到，指的是一个学生某节课的签到
      * @param studentId
      * @param courseId
