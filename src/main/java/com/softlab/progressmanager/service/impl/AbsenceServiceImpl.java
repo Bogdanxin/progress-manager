@@ -6,6 +6,7 @@ import com.softlab.progressmanager.core.mapper.AbsenceMapper;
 import com.softlab.progressmanager.core.mapper.CourseMapper;
 import com.softlab.progressmanager.core.mapper.StudentMapper;
 import com.softlab.progressmanager.core.model.Absence;
+import com.softlab.progressmanager.core.model.Student;
 import com.softlab.progressmanager.service.AbsenceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,108 +37,160 @@ public class AbsenceServiceImpl implements AbsenceService {
         this.courseMapper = courseMapper;
     }
 
-    /**
-     * 这里有一个严重的问题，是否添加一个学生选课表？
-     * 因为添加学生信息时候会有问题
-     */
+
     @Override
-    public RestData insertAbsence(Absence absence) throws ProException {
-        //首先查看学生是否存在，不存在则直接报错未登记该学生信息
-        if (studentMapper.selectStudentById(absence.getStudentId()) == null) {
-            throw new ProException("不存在该学生信息！请先添加学生信息！");
+    public RestData insertAbsence(Absence absence, int classId) throws ProException {
+        //首先判断签到这个学生是不是这个在这个班级里
+        Student student = studentMapper
+                .selectStudentById(absence.getStudentId(), classId);
+        if (student == null) {
+            throw new ProException("该学生不存在，请确认后添加！");
         }
-        if (courseMapper.selectCourseById(absence.getCourseId()) == null) {
-            throw new ProException("不存在该课程信息！请先添加该课程信息！");
-        }
-        //存在，则将学生未签到加一，未签到表中记录
-        if (studentMapper.absenceStudent(absence.getStudentId()) > 0
-                && absenceMapper.insertAbsence(absence) > 0) {
-            return new RestData(0,"记录成功！");
+
+        //如果存在，则将该记录添加到记录表
+        //添加成功，则返回成功，不然就报错
+        if (absenceMapper.insertAbsence(absence) > 0
+                && studentMapper.absenceStudent(absence.getStudentId(), classId) > 0) {
+            return new RestData(0, "记录成功！");
         }else {
-            throw new ProException("记录失败！");
+            throw new ProException("出现错误，记录失败");
         }
     }
 
     @Override
-    public List<Map<Integer, String>> insertAbsences(List<Absence> absences) throws ProException {
+    public List<Map<Integer, String>>
+        insertAbsences(List<Absence> absences, int classId) throws ProException {
         List<Map<Integer, String>> al = new ArrayList<>();
         for (Absence absence : absences){
             Map<Integer, String> map = new HashMap<>();
-            if (studentMapper.selectStudentById(absence.getStudentId()) == null) {
-                map.put(absence.getStudentId(), "该学生信息不存在，请先添加！");
-                al.add(map);
-                continue;
-            }
-            if (courseMapper.selectCourseById(absence.getCourseId()) == null) {
-                map.put(absence.getCourseId(), "该课程信息不存在，请先添加！");
-                al.add(map);
-                continue;
-            }
 
-            if (absenceMapper.insertAbsence(absence) > 0 &&
-                    studentMapper.absenceStudent(absence.getStudentId()) > 0){
-                map.put(absence.getStudentId(), "添加成功!");
-                map.put(absence.getCourseId(), "添加成功！");
+            Student student = studentMapper
+                    .selectStudentById(absence.getStudentId(), absence.getCourseId());
+
+            if (student.getClassId() != classId) {
+                map.put(student.getStudentId(), "该学生信息不存在于班级，请检查后再试。");
             }else {
-                map.put(absence.getCourseId(), "添加失败！");
-                map.put(absence.getStudentId(),"添加失败！");
+                if (absenceMapper.insertAbsence(absence) > 0) {
+                    map.put(student.getStudentId(), "添加成功！");
+                }else {
+                    map.put(student.getStudentId(), "出现错误，添加失败！");
+                }
             }
             al.add(map);
+
         }
         return al;
     }
 
     @Override
-    public RestData deleteAbsence(int studentId, int courseId) throws ProException {
-        //学生不存在，报错并要求添加该学生信息
-        if (studentMapper.selectStudentById(studentId) == null) {
-            throw new ProException("不存在该学生信息！请先添加后在进行记录！");
-        }
-        //存在，删除该记录，并给学生减一记录
-        if (studentMapper.absenceStudentLift(studentId) > 0
-                && absenceMapper.deleteAbsenceById(studentId, courseId) > 0) {
-            return new RestData(0, "修改成功！");
+    public RestData deleteAbsence
+            (int studentId, int courseId, String date, int classId) throws ProException {
+
+
+        if (absenceMapper.deleteAbsenceById(studentId, courseId, date) > 0
+                && studentMapper.absenceStudentLift(studentId, classId) > 0) {
+            return new RestData(0, "删除成功！");
         }else {
-            throw new ProException("记录失败！");
+            throw new ProException("删除失败！");
         }
     }
 
     @Override
-    public Map<String, Object> selectCourseAbsenceById(int courseId, String date) throws ProException {
-        Map<String, Object> map = new HashMap<>();
-        List<Absence> absences = absenceMapper.selectAbsenceById(courseId);
-        if (absences != null && absences.size() > 0) {
-            map.put("createTime", absences.get(0).getCreateTime());
-            map.put("absenceStudentNum", absenceMapper.getStudentAbsenceNum(courseId, date));
-            for (int i = 0;i < absences.size();i++){
-                map.put("studentId" + i, absences.get(i).getStudentId());
-            }
+    public Map<String, Object> selectByDateStudentIdAndCourseId
+            (int studentId, int courseId, String date) throws ProException {
+
+        Map<String , Object> map = new HashMap<>();
+        Absence absence = absenceMapper.
+                selectByDateAndStudentIdAndCourseId(studentId, courseId, date);
+        if (absence != null) {
+            map.put("studentId", absence.getStudentId());
+            map.put("courseId",absence.getCourseId());
+            map.put("createTime", absence.getCreateTime());
         }else {
-            throw new ProException("查找失败！");
+            throw new ProException("出现错误，查找失败！");
         }
+
         return map;
     }
 
-    /**
-     * 问题很大
-     */
     @Override
     public List<Map<String, Object>> selectAbsenceByDate(String date) throws ProException {
-        List<Map<String, Object>>  al = new ArrayList<>();
+        List<Map<String, Object>> al = new ArrayList<>();
+
         List<Absence> absences = absenceMapper.selectAbsenceByDate(date);
-        if (absences != null && absences.size() > 0) {
+        if (absences != null) {
             for (Absence absence : absences){
                 Map<String, Object> map = new HashMap<>();
-                map.put("studentId", absence.getStudentId());
+                map.put("studentId",absence.getStudentId());
                 map.put("courseId", absence.getCourseId());
+                map.put("createTime", absence.getCreateTime());
                 al.add(map);
             }
         }else {
-            throw new ProException("查找失败！");
+            throw new ProException("出现错误，查找失败！");
         }
 
         return al;
     }
 
+    @Override
+    public List<Map<String, Object>> selectAbsenceByCourseId(int courseId) throws ProException {
+        List<Map<String, Object>> al = new ArrayList<>();
 
+        List<Absence> absences = absenceMapper.selectAbsenceByCourseId(courseId);
+
+        if (absences != null) {
+            for (Absence absence : absences){
+                Map<String, Object> map = new HashMap<>();
+                map.put("studentId",absence.getStudentId());
+                map.put("courseId", absence.getCourseId());
+                map.put("createTime", absence.getCreateTime());
+                al.add(map);
+            }
+        }else {
+            throw new ProException("出现错误，查找失败！");
+        }
+
+        return al;
+    }
+
+    @Override
+    public List<Map<String, Object>> selectAbsenceByDateAndCourseId(int courseId, String date) throws ProException {
+        List<Map<String, Object>> al = new ArrayList<>();
+
+        List<Absence> absences = absenceMapper.selectAbsenceByDateAndCourseId(courseId, date);
+        if (absences != null) {
+            for (Absence absence : absences){
+                Map<String, Object> map = new HashMap<>();
+                map.put("studentId",absence.getStudentId());
+                map.put("courseId", absence.getCourseId());
+                map.put("createTime", absence.getCreateTime());
+                al.add(map);
+            }
+        }else {
+            throw new ProException("出现错误，查找失败！");
+        }
+
+        return al;
+    }
+
+    @Override
+    public List<Map<String, Object>> selectAbsenceStudent(int courseId, int studentId) throws ProException {
+        List<Map<String, Object>> al = new ArrayList<>();
+
+        List<Absence> absences = absenceMapper.selectAbsenceStudent(courseId, studentId);
+        if (absences != null) {
+            for (Absence absence : absences){
+                Map<String, Object> map = new HashMap<>();
+                map.put("studentId",absence.getStudentId());
+                map.put("courseId", absence.getCourseId());
+                map.put("createTime", absence.getCreateTime());
+                al.add(map);
+            }
+        }else {
+            throw new ProException("出现错误，查找失败！");
+        }
+
+        return al;
+    }
 }

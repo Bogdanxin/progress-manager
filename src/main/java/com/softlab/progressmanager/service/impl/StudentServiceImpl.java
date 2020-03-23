@@ -4,6 +4,7 @@ import com.softlab.progressmanager.common.ProException;
 import com.softlab.progressmanager.common.RestData;
 import com.softlab.progressmanager.core.mapper.AbsenceMapper;
 import com.softlab.progressmanager.core.mapper.StudentMapper;
+import com.softlab.progressmanager.core.model.Absence;
 import com.softlab.progressmanager.core.model.Student;
 import com.softlab.progressmanager.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,8 +36,9 @@ public class StudentServiceImpl implements StudentService {
 
 
     @Override
-    public RestData insertStudent(Student student) throws ProException {
-        if (studentMapper.selectStudentById(student.getStudentId()) != null) {
+    public RestData insertStudent(Student student, int classId) throws ProException {
+        //查看是否已经又该学生的信息，有的话返回错误信息
+        if (studentMapper.selectStudentById(student.getStudentId(), classId) != null) {
             throw new ProException("添加失败！已经有该学生的信息！");
         }
 
@@ -53,7 +55,8 @@ public class StudentServiceImpl implements StudentService {
         List<Map<Integer, String>> al = new ArrayList<>();
         for (Student student : students){
             Map<Integer, String> map = new HashMap<>(1);
-            if (studentMapper.selectStudentById(student.getStudentId()) != null) {
+            //判断这里的学生是不是本班
+            if (studentMapper.selectStudentById(student.getStudentId(), student.getClassId()) != null) {
                 map.put(student.getStudentId(), "该学生已经录入，无需再次记录。");
                 al.add(map);
                 continue;
@@ -69,8 +72,10 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public RestData deleteStudentById(int studentId) throws ProException {
-        if (studentMapper.deleteStudentById(studentId) > 0
+    public RestData deleteStudentById(int studentId, int classId) throws ProException {
+
+        //删除一个学生，不仅要删除本班的学生还要删除学生相应的签到情况
+        if (studentMapper.deleteStudentById(studentId, classId) > 0
                 && absenceMapper.deleteAbsenceByStudentId(studentId) > 0) {
             return new RestData(0,"删除成功!");
         }else {
@@ -79,8 +84,9 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public RestData updateStudentById(int studentId, Student student) throws ProException {
-        if (studentMapper.updateStudentById(studentId, student) > 0) {
+    public RestData updateStudentById(int studentId, int classId, Student student) throws ProException {
+
+        if (studentMapper.updateStudentById(studentId, classId, student) > 0) {
             return new RestData(0,"修改成功！");
         }else {
             throw new ProException("修改失败!");
@@ -88,9 +94,9 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public Map<String, Object> selectStudentById(int studentId) throws ProException {
+    public Map<String, Object> selectStudentById(int studentId, int classId) throws ProException {
          Map<String, Object> map = new HashMap<>();
-         Student student = studentMapper.selectStudentById(studentId);
+         Student student = studentMapper.selectStudentById(studentId, classId);
         if (student != null) {
             map.put("studentId",student.getStudentId());
             map.put("studentName", student.getStudentName());
@@ -100,5 +106,23 @@ public class StudentServiceImpl implements StudentService {
         }
 
         return map;
+    }
+
+    @Override
+    public List<Map<String, Object>> selectStudentsByClassId(int classId) throws ProException {
+        List<Map<String, Object>> al = new ArrayList<>();
+        List<Student> students = studentMapper.selectStudentsByClassId(classId);
+        if (students != null) {
+            for (Student student : students){
+                Map<String, Object> map = new HashMap<>();
+                map.put("studentId",student.getStudentId());
+                map.put("studentName", student.getStudentName());
+                map.put("absenceTimes", student.getAbsenceTimes());
+                al.add(map);
+            }
+        }else {
+            throw new ProException("查找失败！");
+        }
+        return al;
     }
 }

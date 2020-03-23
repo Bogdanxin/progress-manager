@@ -27,7 +27,6 @@ import java.util.List;
 public class AbsenceApi {
 
     private final static Logger logger = LoggerFactory.getLogger(AbsenceApi.class);
-
     private final AbsenceService absenceService;
 
     @Autowired
@@ -36,7 +35,9 @@ public class AbsenceApi {
     }
 
     @PostMapping(value = "/addAbsence")
-    public RestData addAbsence(@RequestBody Absence absence, HttpServletRequest request){
+    public RestData addAbsence(@RequestBody Absence absence,
+                               @RequestParam("classId") int classId,
+                               HttpServletRequest request){
         logger.info("add absence :" + JsonUtils.getJsonFromObj(absence));
 
         if (VerifyUtil.verifyUserType(request) != 0) {
@@ -44,7 +45,7 @@ public class AbsenceApi {
         }
 
         try {
-            return absenceService.insertAbsence(absence);
+            return absenceService.insertAbsence(absence, classId);
         }catch (ProException ex){
             return new RestData(1, ex.getMessage());
         }
@@ -52,6 +53,7 @@ public class AbsenceApi {
 
     @PostMapping(value = "/addAbsences")
     public RestData addAbsences(@RequestBody List<Absence> absences,
+                                @RequestParam("classId") int classId,
                                 HttpServletRequest request){
         logger.info("add absence : " + JsonUtils.getJsonFromObj(absences));
 
@@ -60,7 +62,7 @@ public class AbsenceApi {
         }
 
         try {
-            return new RestData(absenceService.insertAbsences(absences));
+            return new RestData(absenceService.insertAbsences(absences, classId));
         }catch (ProException ex){
             return new RestData(1, ex.getMessage());
         }
@@ -70,6 +72,8 @@ public class AbsenceApi {
     @DeleteMapping(value = "/deleteAbsence")
     public RestData deleteAbsence(@RequestParam("courseId") int courseId,
                                   @RequestParam("studentId") int studentId,
+                                  @RequestParam("date") String date,
+                                  @RequestParam("classId") int classId,
                                   HttpServletRequest request){
         logger.info("delete absence by course id: " + courseId + "and student id :" + studentId);
 
@@ -78,23 +82,26 @@ public class AbsenceApi {
         }
 
         try {
-            return absenceService.deleteAbsence(studentId, courseId);
+            return absenceService.deleteAbsence(studentId, courseId, date, classId);
         }catch (ProException ex){
             return new RestData(1, ex.getMessage());
         }
     }
 
     @GetMapping(value = "/getAbsence")
-    public RestData getAbsence(@RequestParam("id") int courseId,
+    public RestData getAbsence(@RequestParam("courseId") int courseId,
                                @RequestParam("date") String date,
+                               @RequestParam("studentId") int studentId,
                                HttpServletRequest request){
+
         logger.info("get absence by course id :" + courseId);
         if (VerifyUtil.verifyUserType(request) != 0) {
             return new RestData(1,"用户未授权！");
         }
 
         try {
-            return new RestData(absenceService.selectCourseAbsenceById(courseId,date));
+            return new RestData
+                    (absenceService.selectByDateStudentIdAndCourseId(studentId,courseId,date));
         }catch (ProException ex){
             return new RestData(1, ex.getMessage());
         }
@@ -112,6 +119,59 @@ public class AbsenceApi {
             return new RestData(absenceService.selectAbsenceByDate(date));
         }catch (ProException ex){
             return new RestData(1, ex.getMessage());
+        }
+    }
+
+    @GetMapping(value = "/getAbsenceByCourseId")
+    public RestData getAbsenceByCourseId(@RequestParam("courseId") int courseId,
+                                         HttpServletRequest request){
+        logger.info("get absence by course id : " + courseId );
+        if (VerifyUtil.verifyUserType(request) != 0) {
+            return new RestData(1, "用户未授权！");
+        }
+
+        try {
+            return new RestData(absenceService.selectAbsenceByCourseId(courseId));
+        }catch (ProException ex){
+            return new RestData(1,ex.getMessage());
+        }
+    }
+
+    @GetMapping(value = "/getAbsenceByDateAndCourseId")
+    public RestData getAbsenceByDateAndCourseId(@RequestParam("courseId") int courseId,
+                                                @RequestParam("date") String date,
+                                                HttpServletRequest request){
+
+        logger.info("get absence by course id : " + courseId + "and date:" + date);
+
+        if (VerifyUtil.verifyUserType(request) != 0) {
+            return new RestData(1, "用户未授权！");
+        }
+
+        try {
+            return new RestData
+                    (absenceService.selectAbsenceByDateAndCourseId(courseId, date));
+        }catch (ProException ex){
+            return new RestData(1,ex.getMessage());
+        }
+    }
+
+    @GetMapping(value = "/getAbsenceByCourseIdAndStudentId")
+    public RestData getAbsenceByCourseIdAndStudentId
+            (@RequestParam("courseId") int courseId,
+             @RequestParam("studentId") int studentId,
+             HttpServletRequest request){
+
+        logger.info("get absence by course id : " + courseId + "and student id :" + studentId);
+        if (VerifyUtil.verifyUserType(request) != 0) {
+            return new RestData(1, "用户未授权！");
+        }
+
+        try {
+            return new RestData
+                    (absenceService.selectAbsenceStudent(courseId, studentId));
+        }catch (ProException ex){
+            return new RestData(1,ex.getMessage());
         }
     }
 }

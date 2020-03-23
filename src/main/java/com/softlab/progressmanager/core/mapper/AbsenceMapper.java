@@ -29,17 +29,19 @@ public interface AbsenceMapper {
      * 删除一个签到
      * @param studentId
      * @param courseId
+     * @param date
      * @return
      */
     int deleteAbsenceById(@Param("studentId") int studentId,
-                          @Param("courseId") int courseId);
+                          @Param("courseId") int courseId,
+                          @Param("date") String date);
 
     /**
-     * 查看指定id的签到
+     * 查看指定课程的签到
      * @param courseId
      * @return
      */
-    List<Absence> selectAbsenceById(int courseId);
+    List<Absence> selectAbsenceByCourseId(int courseId);
 
     /**
      * 查看指定日期的签到
@@ -47,6 +49,37 @@ public interface AbsenceMapper {
      * @return
      */
     List<Absence> selectAbsenceByDate(String createTime);
+
+    /**
+     * 查找指定某日某节课的签到
+     * @param courseId
+     * @param date
+     * @return
+     */
+    List<Absence> selectAbsenceByDateAndCourseId
+            (@Param("courseId")int courseId,
+             @Param("createTime") String date);
+
+    /**
+     * 查找该学生的本课程所有的签到记录
+     * @param studentId
+     * @param courseId
+     * @return
+     */
+    List<Absence> selectAbsenceStudent(@Param("studentId") int studentId,
+                                       @Param("courseId") int courseId);
+
+    /**
+     * 查找指定某日，某课，某人的签到情况
+     * @param studentId
+     * @param courseId
+     * @param date
+     * @return
+     */
+    Absence selectByDateAndStudentIdAndCourseId
+            (@Param("studentId") int studentId,
+             @Param("courseId")int courseId,
+             @Param("date")String date);
 
     /**
      * 获取指定id的和时间的课程签到情况

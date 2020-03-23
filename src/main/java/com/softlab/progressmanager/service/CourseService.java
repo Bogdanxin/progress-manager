@@ -42,6 +42,14 @@ public interface CourseService {
     RestData updateCourseById(int courseId, Course course) throws ProException;
 
     /**
+     * 查看指定班级的所有课程
+     * @param classId
+     * @return
+     * @throws ProException
+     */
+    List<Map<String, Object>> selectCourseByClassId(int classId) throws ProException;
+
+    /**
      * 查找指定id的课程
      * @param courseId
      * @return
@@ -50,36 +58,12 @@ public interface CourseService {
     Map<String, Object> selectCourseById(int courseId) throws ProException;
 
     /**
-     * 根据不同条件查找
-     * @param course
-     * @return
-     * @throws ProException
-     */
-    List<Map<String, Object>> selectCourseByCondition(Course course) throws ProException;
-
-    /**
      * 计算课程进度
      * @param courseId
      * @return
      * @throws ProException
      */
     float calculateProgressById(int courseId) throws ProException;
-
-    /**
-     * 查看视频上传进度
-     * @param courseId
-     * @return
-     * @throws ProException
-     */
-    String selectVideoProgress(int courseId) throws ProException;
-
-    /**
-     * 查看该用户所有的课程
-     * @param userId
-     * @return
-     * @throws ProException
-     */
-    List<Map<String, Object>> selectCourseByUserId(int userId) throws ProException;
 
     /**
      * 更新完成课时时间

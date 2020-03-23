@@ -58,46 +58,49 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    public List<Map<String, Object>> selectCourseByClassId(int classId) throws ProException {
+        List<Map<String, Object>> al = new ArrayList<>();
+        List<Course> courses = courseMapper.selectCourseByClassId(classId);
+        if (courses != null) {
+            for (Course course : courses){
+                Map<String, Object> map = new HashMap<>();
+                map.put("courseId", course.getCourseId());
+                map.put("courseName", course.getCourseName());
+                map.put("courseHours", course.getCourseHours());
+                map.put("courseFinishHours", course.getCourseFinishHours());
+                map.put("courseIntroduction", course.getCourseIntroduction());
+                map.put("classId", course.getClassId());
+                map.put("x", course.getX());
+                map.put("y", course.getY());
+                al.add(map);
+            }
+        }else {
+            throw new ProException("查找失败！");
+        }
+
+        return al;
+
+    }
+
+    @Override
     public Map<String, Object> selectCourseById(int courseId) throws ProException {
         Map<String, Object> map = new HashMap<>(8);
         Course course = courseMapper.selectCourseById(courseId);
         if (course != null) {
             map.put("courseId", course.getCourseId());
             map.put("courseName", course.getCourseName());
-            map.put("courseVideoProgress", course.getCourseVideoProgress());
             map.put("courseHours", course.getCourseHours());
             map.put("courseFinishHours", course.getCourseFinishHours());
-            map.put("userId", course.getUserId());
-            map.put("createTime", course.getCreateTime());
             map.put("courseIntroduction", course.getCourseIntroduction());
+            map.put("classId", course.getClassId());
+            map.put("x", course.getX());
+            map.put("y", course.getY());
         }else {
             throw new ProException("查找失败！");
         }
         return map;
     }
 
-    @Override
-    public List<Map<String, Object>> selectCourseByCondition(Course course1) throws ProException {
-        List<Map<String, Object>> al = new ArrayList<>();
-        List<Course> courses = courseMapper.selectCourseByCondition(course1);
-        if (courses != null) {
-            for (Course course : courses) {
-                Map<String, Object> map = new HashMap<>(8);
-                map.put("courseId", course.getCourseId());
-                map.put("courseName", course.getCourseName());
-                map.put("courseVideoProgress", course.getCourseVideoProgress());
-                map.put("courseHours", course.getCourseHours());
-                map.put("courseFinishHours", course.getCourseFinishHours());
-                map.put("userId", course.getUserId());
-                map.put("createTime", course.getCreateTime());
-                map.put("courseIntroduction", course.getCourseIntroduction());
-                al.add(map);
-            }
-        }else {
-            throw new ProException("查找失败！");
-        }
-        return al;
-    }
 
     @Override
     public float calculateProgressById(int courseId) throws ProException {
@@ -108,39 +111,6 @@ public class CourseServiceImpl implements CourseService {
         }else {
             throw new ProException("课程进度查看异常！");
         }
-    }
-
-    @Override
-    public String selectVideoProgress(int courseId) throws ProException {
-        String progress = courseMapper.selectVideoProgress(courseId);
-        if (progress != null) {
-            return progress;
-        }else {
-            throw new ProException("视频进程查询错误！");
-        }
-    }
-
-    @Override
-    public List<Map<String, Object>> selectCourseByUserId(int userId) throws ProException {
-        List<Map<String, Object>> al = new ArrayList<>();
-        List<Course> courses = courseMapper.selectCourseByUserId(userId);
-        if (courses != null) {
-            for (Course course : courses) {
-                Map<String, Object> map = new HashMap<>(8);
-                map.put("courseId", course.getCourseId());
-                map.put("courseName", course.getCourseName());
-                map.put("courseVideoProgress", course.getCourseVideoProgress());
-                map.put("courseHours", course.getCourseHours());
-                map.put("courseFinishHours", course.getCourseFinishHours());
-                map.put("userId", course.getUserId());
-                map.put("createTime", course.getCreateTime());
-                map.put("courseIntroduction", course.getCourseIntroduction());
-                al.add(map);
-            }
-        }else {
-            throw new ProException("查找失败！");
-        }
-        return al;
     }
 
     @Override

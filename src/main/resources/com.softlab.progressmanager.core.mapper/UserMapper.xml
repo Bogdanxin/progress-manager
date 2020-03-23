@@ -21,7 +21,7 @@
         user_academy, user_token, user_type)
         value
         (#{teacherId}, #{userName}, #{password},
-        #{userAcademy}, #{token}, 0)
+        #{userAcademy}, "", 0)
     </insert>
 
     <update id="updateUserById">
@@ -71,7 +71,7 @@
 
     <update id="updateTokenNullById">
         update users
-        set user_token = ''
+        set user_token = ""
         where user_id = #{userId}
     </update>
 

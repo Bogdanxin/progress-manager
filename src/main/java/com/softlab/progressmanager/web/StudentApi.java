@@ -26,7 +26,6 @@ import java.util.List;
 public class StudentApi {
 
     private final static Logger logger = LoggerFactory.getLogger(StudentApi.class);
-
     private final StudentService studentService;
 
     @Autowired
@@ -36,6 +35,7 @@ public class StudentApi {
 
     @PostMapping(value = "/addStudent")
     public RestData addStudent(@RequestBody Student student,
+                               @RequestParam("classId") int classId,
                                HttpServletRequest request){
         logger.info("add student :" + JsonUtils.getJsonFromObj(student));
 
@@ -43,7 +43,7 @@ public class StudentApi {
             return new RestData(1, "用户未授权！");
         }
         try {
-            return studentService.insertStudent(student);
+            return studentService.insertStudent(student, classId);
         }catch (ProException ex){
             return new RestData(1, ex.getMessage());
         }
@@ -65,7 +65,8 @@ public class StudentApi {
     }
 
     @DeleteMapping(value = "/deleteStudent")
-    public RestData deleteStudent(@RequestParam("id") int studentId,
+    public RestData deleteStudent(@RequestParam("studentId") int studentId,
+                                  @RequestParam("classId") int classId,
                                   HttpServletRequest request){
         logger.info("delete student by id:" + studentId);
 
@@ -73,14 +74,15 @@ public class StudentApi {
             return new RestData(1,"用户未授权！");
         }
         try {
-            return studentService.deleteStudentById(studentId);
+            return studentService.deleteStudentById(studentId, classId);
         }catch (ProException ex){
             return new RestData(1, ex.getMessage());
         }
     }
 
     @PostMapping(value = "/updateStudent")
-    public RestData updateStudentById(@RequestParam("id") int studentId,
+    public RestData updateStudentById(@RequestParam("studentId") int studentId,
+                                      @RequestParam("classId") int classId,
                                       @RequestBody Student student,
                                       HttpServletRequest request){
         logger.info("update student by id : " + studentId);
@@ -89,14 +91,15 @@ public class StudentApi {
         }
 
         try {
-            return studentService.updateStudentById(studentId, student);
+            return studentService.updateStudentById(studentId, classId, student);
         }catch (ProException ex){
             return new RestData(1, ex.getMessage());
         }
     }
 
     @GetMapping(value = "/getStudentById")
-    public RestData selectStudentById(@RequestParam("id") int studentId,
+    public RestData selectStudentById(@RequestParam("studentId") int studentId,
+                                      @RequestParam("classId") int classId,
                                       HttpServletRequest request){
         logger.info("get student by id :" + studentId);
         if (VerifyUtil.verifyUserType(request) != 1) {
@@ -104,9 +107,26 @@ public class StudentApi {
         }
 
         try {
-            return new RestData(studentService.selectStudentById(studentId));
+            return new RestData(studentService.selectStudentById(studentId, classId));
         }catch (ProException ex){
             return new RestData(1, ex.getMessage());
         }
     }
+
+    @GetMapping(value = "/getStudentByClassId")
+    public RestData selectStudentByClassId(@RequestParam("classId") int classId,
+                                           HttpServletRequest request){
+        logger.info("get student by id :" + classId);
+        if (VerifyUtil.verifyUserType(request) != 1) {
+            return new RestData(1, "用户未授权！");
+        }
+
+        try {
+            return new RestData(studentService.selectStudentsByClassId(classId));
+        }catch (ProException ex){
+            return new RestData(1, ex.getMessage());
+        }
+    }
+
+
 }

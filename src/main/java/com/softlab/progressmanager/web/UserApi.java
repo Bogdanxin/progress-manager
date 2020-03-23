@@ -50,7 +50,7 @@ public class UserApi {
         }
     }
 
-    @PostMapping(value = "/registered")
+    @PostMapping(value = "/register")
     public RestData addUser(@RequestBody User user){
         logger.info("add user :" + JsonUtils.getJsonFromObj(user));
         try {

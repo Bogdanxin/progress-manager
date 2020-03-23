@@ -3,19 +3,22 @@
 <mapper namespace="com.softlab.progressmanager.core.mapper.StudentMapper">
     <resultMap id="Student" type="com.softlab.progressmanager.core.model.Student">
         <result column="stu_id" property="studentId"/>
+        <result column="class_id" property="classId"/>
         <result column="stu_name" property="studentName"/>
         <result column="absence_times" property="absenceTimes"/>
     </resultMap>
 
     <insert id="insertStudent">
         insert into students
-        (stu_id, stu_name, absence_times)
+        (stu_id, stu_name, absence_times, class_id)
         values
-        (#{studentId}, #{studentName}, #{absenceTimes})
+        (#{studentId}, #{studentName}, 0, #{classId})
     </insert>
 
     <delete id="deleteStudentById">
-        delete from students where stu_id = #{studentId}
+        delete from students
+        where stu_id = #{studentId}
+        and class_id = #{classId}
     </delete>
 
     <update id="updateStudentById">
@@ -29,16 +32,20 @@
             </if>
         </set>
         where stu_id = #{studentId}
+        and class_id = #{classId}
     </update>
 
     <select id="selectStudentById" resultMap="Student">
-        select * from students where stu_id = #{studentId}
+        select * from students
+        where stu_id = #{studentId}
+        and class_id = #{classId}
     </select>
 
     <update id="absenceStudent">
         update students
         set absence_times = absence_times + 1
         where stu_id = #{studentId}
+        and class_id = #{classId}
     </update>
 
     <update id="absenceStudentLift">
@@ -48,5 +55,11 @@
         when absence_times > 0 then absence_times - 1
         end)
         where stu_id =  #{studentId}
+        and class_id = #{classId}
     </update>
+
+    <select id="selectStudentByClassId" resultMap="Student">
+        select * from students
+        where class_id = #{classId}
+    </select>
 </mapper>

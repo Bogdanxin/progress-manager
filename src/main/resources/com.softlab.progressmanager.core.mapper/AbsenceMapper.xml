@@ -18,9 +18,10 @@
         delete from absences
         where stu_id = #{studentId}
         and cou_id = #{courseId}
+        and create_time = #{date}
     </delete>
 
-    <select id="selectAbsenceById" resultMap="Absence">
+    <select id="selectAbsenceByCourseId" resultMap="Absence">
         select * from
         absences
         where cou_id = #{courseId}
@@ -30,6 +31,25 @@
         select * from
         absences
         where create_time = #{createTime}
+    </select>
+
+    <select id="selectAbsenceByDateAndCourseId" resultMap="Absence">
+        select * from absences
+        where cou_id = #{courseId}
+        and create_time = #{createTime}
+    </select>
+
+    <select id="selectAbsenceStudent" resultMap="Absence">
+        select * from absences
+        where cou_id = #{courseId}
+        and stu_id = #{studentId}
+    </select>
+
+    <select id="selectByDateAndStudentIdAndCourseId" resultMap="Absence">
+        select * from absences
+        where stu_id = #{studentId}
+        and cou_id = #{courseId}
+        and create_time = #{date}
     </select>
     
     <select id="getStudentAbsenceNum" resultType="INTEGER">
@@ -42,4 +62,10 @@
     <delete id="deleteAbsenceByStudentId">
         delete from absences where stu_id = #{studentId}
     </delete>
+
+    <select id="selectAbsenceByDateAndClassId" resultMap="Absence">
+        select * from absences
+        where create_time = #{date}
+        and class_id = #{classId}
+    </select>
 </mapper>

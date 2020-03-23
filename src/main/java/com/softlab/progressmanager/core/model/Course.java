@@ -23,11 +23,6 @@ public class Course {
     private String courseName;
 
     /**
-     * 课程视频上传进度
-     */
-    private String courseVideoProgress;
-
-    /**
      * 课时总学时
      */
     private int courseHours;
@@ -38,17 +33,22 @@ public class Course {
     private int courseFinishHours;
 
     /**
-     * 此课程教学老师
-     */
-    private int userId;
-
-    /**
-     * 创建时间
-     */
-    private String createTime;
-
-    /**
      * 课程介绍
      */
     private String courseIntroduction;
+
+    /**
+     * 对应班级id
+     */
+    private int classId;
+
+    /**
+     * 用于定位x轴
+     */
+    private int x;
+
+    /**
+     * 用于定位y轴
+     */
+    private int y;
 }

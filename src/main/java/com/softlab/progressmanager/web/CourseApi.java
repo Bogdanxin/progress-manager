@@ -33,7 +33,8 @@ public class CourseApi {
     }
 
     @PostMapping(value = "/addCourse")
-    public RestData addCourse(@RequestBody Course course, HttpServletRequest request){
+    public RestData addCourse(@RequestBody Course course,
+                              HttpServletRequest request){
         logger.info("add course: " + JsonUtils.getJsonFromObj(course));
 
         if (VerifyUtil.verifyUserType(request) != 1) {
@@ -48,7 +49,7 @@ public class CourseApi {
     }
 
     @DeleteMapping(value = "/deleteCourseById")
-    public RestData deleteCourseById(@RequestParam("id") int id,
+    public RestData deleteCourseById(@RequestParam("courseId") int id,
                                      HttpServletRequest request){
         logger.info("delete course by id " + id);
         if (VerifyUtil.verifyUserType(request) != 1) {
@@ -63,7 +64,7 @@ public class CourseApi {
     }
 
     @PostMapping(value = "/updateCourseById")
-    public RestData updateCourseById(@RequestParam("id") int id,
+    public RestData updateCourseById(@RequestParam("courseId") int id,
                                      @RequestBody Course course,
                                      HttpServletRequest request){
         logger.info("update course"+ JsonUtils.getJsonFromObj(course) + "by id : " + id);
@@ -78,8 +79,20 @@ public class CourseApi {
         }
     }
 
+    @GetMapping(value = "/getCourseByClassId")
+    public RestData getCourseByClassId(@RequestParam("classId") int classId,
+                                       HttpServletRequest request){
+        logger.info("get course by class id : " + classId);
+
+        try {
+            return new RestData(courseService.selectCourseByClassId(classId));
+        }catch (ProException ex){
+            return new RestData(1, ex.getMessage());
+        }
+    }
+
     @GetMapping(value = "/getCourseById")
-    public RestData getCourseById(@RequestParam("id") int id){
+    public RestData getCourseById(@RequestParam("courseId") int id){
         logger.info("get course by id : " + id);
 
         try {
@@ -95,28 +108,6 @@ public class CourseApi {
 
         try {
             return new RestData(courseService.calculateProgressById(id)*100 + "%");
-        }catch (ProException ex){
-            return new RestData(1, ex.getMessage());
-        }
-    }
-
-    @GetMapping(value = "/getVideoProgress/{id}")
-    public RestData getVideoProgress(@PathVariable int id){
-        logger.info("get video progress by id : " + id );
-
-        try {
-            return new RestData(courseService.selectVideoProgress(id));
-        }catch (ProException ex){
-            return new RestData(1, ex.getMessage());
-        }
-    }
-
-    @GetMapping(value = "/getCourseByUserId")
-    public RestData getCoursesByUserId(@RequestParam("id") int id){
-        logger.info("get courses by user id :" + id);
-
-        try {
-            return new RestData(courseService.selectVideoProgress(id));
         }catch (ProException ex){
             return new RestData(1, ex.getMessage());
         }

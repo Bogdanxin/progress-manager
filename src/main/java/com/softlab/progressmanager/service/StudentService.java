@@ -19,10 +19,11 @@ public interface StudentService {
     /**
      * 添加一个学生
      * @param student
+     * @param classId
      * @return
      * @throws ProException
      */
-    RestData insertStudent(Student student)throws ProException;
+    RestData insertStudent(Student student, int classId)throws ProException;
 
     /**
      * 批量添加学生
@@ -38,26 +39,37 @@ public interface StudentService {
     /**
      * 删除指定id的学生以及其相关的记录
      * @param studentId
+     * @param classId
      * @return
      * @throws ProException
      */
-    RestData deleteStudentById(int studentId) throws ProException;
+    RestData deleteStudentById(int studentId, int classId) throws ProException;
 
     /**
      * 修改指定学生信息
      * @param studentId
      * @param student
+     * @param classId
      * @return
      * @throws ProException
      */
-    RestData updateStudentById(int studentId, Student student) throws ProException;
+    RestData updateStudentById(int studentId, int classId, Student student) throws ProException;
 
     /**
      * 查找指定id的学生
      * @param studentId
+     * @param classId
      * @return
      * @throws ProException
      */
-    Map<String, Object> selectStudentById(int studentId) throws ProException;
+    Map<String, Object> selectStudentById(int studentId, int classId) throws ProException;
+
+    /**
+     * 查看指定班级的所有学生
+     * @param classId
+     * @return
+     * @throws ProException
+     */
+    List<Map<String, Object>> selectStudentsByClassId(int classId) throws ProException;
 
 }

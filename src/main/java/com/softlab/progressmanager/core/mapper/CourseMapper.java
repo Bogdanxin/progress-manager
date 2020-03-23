@@ -43,18 +43,18 @@ public interface CourseMapper {
                          @Param("course") Course course);
 
     /**
-     * 查找指定id的课程
+     * 查找指定班级的课程
+     * @param classId
+     * @return
+     */
+    List<Course> selectCourseByClassId(int classId);
+
+    /**
+     * 查找指定id的课程（详情）
      * @param courseId
      * @return
      */
     Course selectCourseById(int courseId);
-
-    /**
-     * 查找符合不同条件的课程
-     * @param course
-     * @return
-     */
-    List<Course> selectCourseByCondition(Course course);
 
     /**
      * 查看指定id的进程
@@ -64,21 +64,7 @@ public interface CourseMapper {
     float calculateProgressById(int courseId);
 
     /**
-     * 查看指定id的课程视频进度
-     * @param courseId
-     * @return
-     */
-    String selectVideoProgress(int courseId);
-
-    /**
-     * 查找指定用户id的所有课程
-     * @param userId
-     * @return
-     */
-    List<Course> selectCourseByUserId(int userId);
-
-    /**
-     * 修改课时进度
+     * 记录课时进度
      * @param increaseHours
      * @param courseId
      * @return
