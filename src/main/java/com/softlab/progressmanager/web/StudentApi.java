@@ -39,7 +39,7 @@ public class StudentApi {
                                HttpServletRequest request){
         logger.info("add student :" + JsonUtils.getJsonFromObj(student));
 
-        if (VerifyUtil.verifyUserType(request) != 1) {
+        if (VerifyUtil.verifyUserType(request) != 0) {
             return new RestData(1, "用户未授权！");
         }
         try {
@@ -53,7 +53,7 @@ public class StudentApi {
     public RestData addStudents(@RequestBody List<Student> students,
                                 HttpServletRequest request){
         logger.info("add students by list: " + JsonUtils.getJsonFromObj(students));
-        if (VerifyUtil.verifyUserType(request) != 1) {
+        if (VerifyUtil.verifyUserType(request) != 0) {
             return new RestData(1, "用户未授权！");
         }
 
@@ -70,7 +70,7 @@ public class StudentApi {
                                   HttpServletRequest request){
         logger.info("delete student by id:" + studentId);
 
-        if (VerifyUtil.verifyUserType(request) != 1) {
+        if (VerifyUtil.verifyUserType(request) != 0) {
             return new RestData(1,"用户未授权！");
         }
         try {
@@ -86,7 +86,7 @@ public class StudentApi {
                                       @RequestBody Student student,
                                       HttpServletRequest request){
         logger.info("update student by id : " + studentId);
-        if (VerifyUtil.verifyUserType(request) != 1) {
+        if (VerifyUtil.verifyUserType(request) != 0) {
             return new RestData(1,"用户未授权！");
         }
 
@@ -102,7 +102,7 @@ public class StudentApi {
                                       @RequestParam("classId") int classId,
                                       HttpServletRequest request){
         logger.info("get student by id :" + studentId);
-        if (VerifyUtil.verifyUserType(request) != 1) {
+        if (VerifyUtil.verifyUserType(request) != 0) {
             return new RestData(1, "用户未授权！");
         }
 
@@ -117,7 +117,7 @@ public class StudentApi {
     public RestData selectStudentByClassId(@RequestParam("classId") int classId,
                                            HttpServletRequest request){
         logger.info("get student by id :" + classId);
-        if (VerifyUtil.verifyUserType(request) != 1) {
+        if (VerifyUtil.verifyUserType(request) != 0) {
             return new RestData(1, "用户未授权！");
         }
 

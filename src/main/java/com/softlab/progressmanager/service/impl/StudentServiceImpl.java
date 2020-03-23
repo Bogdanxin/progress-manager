@@ -3,8 +3,8 @@ package com.softlab.progressmanager.service.impl;
 import com.softlab.progressmanager.common.ProException;
 import com.softlab.progressmanager.common.RestData;
 import com.softlab.progressmanager.core.mapper.AbsenceMapper;
+import com.softlab.progressmanager.core.mapper.ClassMapper;
 import com.softlab.progressmanager.core.mapper.StudentMapper;
-import com.softlab.progressmanager.core.model.Absence;
 import com.softlab.progressmanager.core.model.Student;
 import com.softlab.progressmanager.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,11 +27,13 @@ public class StudentServiceImpl implements StudentService {
 
     private final StudentMapper studentMapper;
     private final AbsenceMapper absenceMapper;
+    private final ClassMapper classMapper;
 
     @Autowired
-    public StudentServiceImpl(StudentMapper studentMapper, AbsenceMapper absenceMapper) {
+    public StudentServiceImpl(StudentMapper studentMapper, AbsenceMapper absenceMapper, ClassMapper classMapper) {
         this.studentMapper = studentMapper;
         this.absenceMapper = absenceMapper;
+        this.classMapper = classMapper;
     }
 
 

@@ -37,7 +37,7 @@ public class CourseApi {
                               HttpServletRequest request){
         logger.info("add course: " + JsonUtils.getJsonFromObj(course));
 
-        if (VerifyUtil.verifyUserType(request) != 1) {
+        if (VerifyUtil.verifyUserType(request) != 0) {
             return new RestData(1,"用户未授权！");
         }
 
@@ -52,7 +52,7 @@ public class CourseApi {
     public RestData deleteCourseById(@RequestParam("courseId") int id,
                                      HttpServletRequest request){
         logger.info("delete course by id " + id);
-        if (VerifyUtil.verifyUserType(request) != 1) {
+        if (VerifyUtil.verifyUserType(request) != 0) {
             return new RestData(1,"用户未授权！");
         }
 
@@ -84,6 +84,9 @@ public class CourseApi {
                                        HttpServletRequest request){
         logger.info("get course by class id : " + classId);
 
+        if (VerifyUtil.verifyUserType(request) != 0) {
+            return new RestData(1,"用户未授权！");
+        }
         try {
             return new RestData(courseService.selectCourseByClassId(classId));
         }catch (ProException ex){
@@ -92,9 +95,12 @@ public class CourseApi {
     }
 
     @GetMapping(value = "/getCourseById")
-    public RestData getCourseById(@RequestParam("courseId") int id){
+    public RestData getCourseById(@RequestParam("courseId") int id,
+                                  HttpServletRequest request){
         logger.info("get course by id : " + id);
-
+        if (VerifyUtil.verifyUserType(request) != 0) {
+            return new RestData(1,"用户未授权！");
+        }
         try {
             return new RestData(courseService.selectCourseById(id));
         }catch (ProException ex){

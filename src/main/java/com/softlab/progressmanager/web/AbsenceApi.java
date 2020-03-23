@@ -77,7 +77,7 @@ public class AbsenceApi {
                                   HttpServletRequest request){
         logger.info("delete absence by course id: " + courseId + "and student id :" + studentId);
 
-        if (VerifyUtil.verifyUserType(request) != 1) {
+        if (VerifyUtil.verifyUserType(request) != 0) {
             return new RestData(1,"用户未授权！");
         }
 

@@ -86,7 +86,7 @@ public class ClassServiceImpl implements ClassService {
                 map.put("classId", cClass.getClassId());
                 map.put("className", cClass.getClassName());
                 map.put("classStudentName", cClass.getClassStudentNum());
-                map.put("teacherId", cClass.getUserId());
+                map.put("userId", cClass.getUserId());
                 al.add(map);
             }
         }else {

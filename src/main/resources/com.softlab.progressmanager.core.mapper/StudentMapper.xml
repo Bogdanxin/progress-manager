@@ -58,7 +58,7 @@
         and class_id = #{classId}
     </update>
 
-    <select id="selectStudentByClassId" resultMap="Student">
+    <select id="selectStudentsByClassId" resultMap="Student">
         select * from students
         where class_id = #{classId}
     </select>

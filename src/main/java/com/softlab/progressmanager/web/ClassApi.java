@@ -48,7 +48,7 @@ public class ClassApi {
 
     @PostMapping(value = "/updateClass")
     public RestData updateClass(@RequestBody CClass cClass,
-                                @RequestParam("id") int classId,
+                                @RequestParam("classId") int classId,
                                 HttpServletRequest request){
         logger.info("update class by id : " + classId);
         if (VerifyUtil.verifyUserType(request) != 0) {
@@ -80,7 +80,7 @@ public class ClassApi {
     }
 
     @GetMapping(value = "/getClassById")
-    public RestData getClassById(@RequestParam("id") int classId,
+    public RestData getClassById(@RequestParam("classId") int classId,
                                  HttpServletRequest request){
         logger.info("get class by id : " + classId);
 
@@ -95,9 +95,9 @@ public class ClassApi {
         }
     }
 
-    @GetMapping(value = "/getClassesByTeacherId")
-    public RestData getClassByTeacherId(@RequestParam("id") int userId,
-                                 HttpServletRequest request){
+    @GetMapping(value = "/getClassesByUserId")
+    public RestData getClassByTeacherId(@RequestParam("userId") int userId,
+                                        HttpServletRequest request){
 
         logger.info("get class by id : " + userId);
 

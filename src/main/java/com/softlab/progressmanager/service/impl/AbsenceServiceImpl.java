@@ -65,12 +65,18 @@ public class AbsenceServiceImpl implements AbsenceService {
             Map<Integer, String> map = new HashMap<>();
 
             Student student = studentMapper
-                    .selectStudentById(absence.getStudentId(), absence.getCourseId());
+                    .selectStudentById(absence.getStudentId(), classId);
+            if (student == null) {
+                map.put(absence.getStudentId(), "该学生不存在，请先录入学生信息后再记录。");
+                al.add(map);
+                continue;
+            }
 
             if (student.getClassId() != classId) {
                 map.put(student.getStudentId(), "该学生信息不存在于班级，请检查后再试。");
             }else {
-                if (absenceMapper.insertAbsence(absence) > 0) {
+                if (absenceMapper.insertAbsence(absence) > 0
+                        && studentMapper.absenceStudent(student.getStudentId(), classId) > 0) {
                     map.put(student.getStudentId(), "添加成功！");
                 }else {
                     map.put(student.getStudentId(), "出现错误，添加失败！");
