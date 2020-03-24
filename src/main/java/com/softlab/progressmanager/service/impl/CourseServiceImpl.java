@@ -3,6 +3,7 @@ package com.softlab.progressmanager.service.impl;
 import com.softlab.progressmanager.common.ProException;
 import com.softlab.progressmanager.common.RestData;
 import com.softlab.progressmanager.core.mapper.CourseMapper;
+import com.softlab.progressmanager.core.model.Coordinate;
 import com.softlab.progressmanager.core.model.Course;
 import com.softlab.progressmanager.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,15 +64,13 @@ public class CourseServiceImpl implements CourseService {
         List<Course> courses = courseMapper.selectCourseByClassId(classId);
         if (courses != null) {
             for (Course course : courses){
-                Map<String, Object> map = new HashMap<>();
+                Map<String, Object> map = new HashMap<>(6);
                 map.put("courseId", course.getCourseId());
                 map.put("courseName", course.getCourseName());
                 map.put("courseHours", course.getCourseHours());
                 map.put("courseFinishHours", course.getCourseFinishHours());
                 map.put("courseIntroduction", course.getCourseIntroduction());
                 map.put("classId", course.getClassId());
-                map.put("x", course.getX());
-                map.put("y", course.getY());
                 al.add(map);
             }
         }else {
@@ -93,8 +92,6 @@ public class CourseServiceImpl implements CourseService {
             map.put("courseFinishHours", course.getCourseFinishHours());
             map.put("courseIntroduction", course.getCourseIntroduction());
             map.put("classId", course.getClassId());
-            map.put("x", course.getX());
-            map.put("y", course.getY());
         }else {
             throw new ProException("查找失败！");
         }
@@ -124,5 +121,53 @@ public class CourseServiceImpl implements CourseService {
         }else {
             throw new ProException("修改失败！");
         }
+    }
+
+    @Override
+    public RestData insertCoordinate(Coordinate coordinate) throws ProException {
+        if (courseMapper.insertCoordinate(coordinate) > 0) {
+            return new RestData(0, "添加成功！");
+        }else {
+            throw new ProException("添加失败！");
+        }
+    }
+
+    @Override
+    public RestData deleteCoordinate(int x, int y, int courseId) throws ProException {
+
+        if (courseMapper.deleteCoordinate(x, y, courseId) > 0) {
+            return new RestData(0, "删除成功！");
+        }else {
+            throw new ProException("删除失败！");
+        }
+    }
+
+    @Override
+    public RestData updateCoordinate(int x, int y, Coordinate coordinate) throws ProException {
+
+        if (courseMapper.updateCoordinate(x, y, coordinate) > 0) {
+            return new RestData(1, "修改成功！");
+        }else {
+            throw new ProException("修改失败！");
+        }
+    }
+
+    @Override
+    public List<Map<String, Object>> selectCoordinateByCourseId(int courseId) throws ProException {
+        List<Map<String, Object>> al = new ArrayList<>();
+        List<Coordinate> coordinates = courseMapper.selectCoordinateByCourseId(courseId);
+        if (coordinates != null) {
+            for (Coordinate coordinate : coordinates){
+                Map<String, Object> map = new HashMap<>();
+                map.put("x", coordinate.getX());
+                map.put("y", coordinate.getY());
+                map.put("courseId", coordinate.getCourseId());
+                al.add(map);
+            }
+        }else {
+            throw new ProException("查找失败！");
+        }
+
+        return al;
     }
 }

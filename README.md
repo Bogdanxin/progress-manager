@@ -7,8 +7,11 @@
     + host : http://182.92.121.195:8080/
     + uri : /login
     + url : http://182.92.121.195:8080/login
+* 各项**删除**方法我暂时还没有测试全，就写了这个api，你先完成其他的，有空帮我测试一下，我写完后就接着做了
 
-## 1.User
+## 1.用户User
+
+user重要的请求就三个 login  register   exit 
 
 **tips：**
 
@@ -16,9 +19,9 @@
   + 0 = 注册用户，只能看到自己课程进展 
   + 1 = 管理用户，能看到所有老师的课程进展和所有学生信息
 
-### 1.1 注册 *
+### 1.1 注册 
 
-* POST  /registered
+* POST  /register
 
 * payload:
 
@@ -27,7 +30,7 @@
   	"teacherId":14,
   	"userName":"李四",
   	"password":"1234567890qwe",
-  	"userAcademy":"信息学院",
+  	"userAcademy":"信息学院(这个默认可以不填)",
   	"token":"",
   	"userType":0
   }
@@ -44,7 +47,7 @@
 
 * ps：注册都是将用户的userType设置为0，特殊情况再说
 
-### 1.2 退出登录 *修改了
+### 1.2 退出登录 
 
 * POST  /exit/{token}
 
@@ -75,7 +78,7 @@
   ```json
   {
       "teacherId":13434,
-      "password":"sdfasdfsdf"
+      "password":"1234567890"
   }
   ```
 
@@ -96,13 +99,15 @@
   }
   ```
 
+  注意这个token，这个是你在登录请求后，后端会给你一个token，以后的所有请求都要带上他。我后面基本都会说，payload **加上request或者token的就是要这个**
 
 
-### 1.4 删除指定Id用户 *
+
+### 1.4 删除指定Id用户（删除请求如果时间不是很够，先放一下，这个一般也用不到，到时候在商量这个）
 
 * DELETE  /deleteUserById?id=2
 
-* payload: request的header带有token，判断userType是否=1
+* payload: request的header带有token
 
 * return:
 
@@ -115,7 +120,7 @@
 
 
 
-### 1.5 获取指定id的用户信息 *
+### 1.5 获取指定id的用户信息
 
 * GET  /getUserById?id=3
 
@@ -140,9 +145,9 @@
 
   
 
-## 2.课程
+## 2.课程Course
 
-
+课程类是你提到的班级的课表中的内容
 
 ###　2.1 添加一个课程
 
@@ -150,15 +155,19 @@
 
 * payload:
 
+  request
+
+  这样的一个json就是课表中的一个课程。要添加多个就要多次请求
+
   ```json
   {
   	"courseName":"c语言",
-  	"courseIntroduction":"c语言教程",
-  	"courseVideoProgress":"已上传3部",
+  	"courseIntroduction":"课程简介",
   	"courseHours":43,
-  	"courseFinishHours":6,
+  	"courseFinishHours":0,
   	"userId":3,
-  	"createTime":"2020-3-4 8:07:33"
+     	"x":3,
+      "y":4
   }
   ```
 
@@ -173,9 +182,9 @@
 
   
 
-### 2.2 删除指定id的课程 *
+### 2.2 删除指定id的课程 
 
-* DELETE  /deleteCourseById?id=4
+* DELETE  /deleteCourseById?courseId=4
 
 * payload：token
 
@@ -190,11 +199,11 @@
 
   
 
-### 2.3 修改指定id的课程信息 *
+### 2.3 修改指定id的课程信息
 
-* POST  /updateCourseById?id=1 
+* POST  /updateCourseById?courseId=1 
 
-* token 这里的userType是0才可以，只能本课程的教师才能修改
+* token 
 
 * payload:
 
@@ -202,12 +211,11 @@
   {
   	"courseName":"高数",
   	"courseHours":47,
-  	"userId":4,
-  	"courseIntroduction":"高等数学"
+  	"courseIntroduction":"简介"
   }
   ```
 
-  因为是修改信息，可以有不填的信息
+因为是修改信息，可以有不填的信息
 
 * return:
 
@@ -220,9 +228,11 @@
 
   
 
-### 2.4 获得指定id的课程信息
+### 2.4 获得指定courseId课程的课程信息
 
-* GET  /getCourseById?id=1
+* GET  /getCourseById?courseId=1
+
+* payload request
 
 * return
 
@@ -231,21 +241,61 @@
       "code": 0,
       "message": "success!",
       "data": {
-          "courseIntroduction": "高等数学",
-          "courseName": "高数",
-          "courseHours": 47,
-          "courseVideoProgress": "上传一个视频",
-          "createTime": "2020-03-12 18:56:03.0",
-          "courseFinishHours": 8,
-          "courseId": 1,
-          "userId": 4
+          "courseName":"c语言",
+          "courseIntroduction":"课程简介",
+          "courseHours":43,
+          "courseFinishHours":0,
+          "userId":3,
+          "x":3,
+          "y":4
       }
   }
   ```
 
+### 2.5 获得指定classId班级的课程信息
+
+和上面的有区别，上面的是这个班级具体到星期几的信息，这个是看这个班级的全部课表
+
+* GET  /getCourseByClassId?classId=1
+
+* payload request
+
+* return
+
+  ```json
+  {
+      "code": 0,
+      "message": "success!",
+      "data": [
+          {
+              "courseName":"c语言",
+              "courseIntroduction":"课程简介",
+              "courseHours":43,
+              "courseFinishHours":4,
+              "userId":3,
+              "x":3,
+              "y":4
+      	},
+          {
+              "courseName":"java",
+              "courseIntroduction":"课程简介",
+              "courseHours":33,
+              "courseFinishHours":0,
+              "userId":3,
+              "x":3,
+              "y":4
+      	}
+       ]
+  }
+  ```
+
+  
 
 
-### 2.5 获得指定id的课程课时进程
+
+### 2.6 获得指定id的课程课时进程
+
+(这个不写了，你可以直接请求获取指定id的courseId，你在直接计算完成课时和总课时比)
 
 * GET  /getCalculation/{id}
 
@@ -261,25 +311,9 @@
 
 
 
-### 2.6 获得指定id课程的视频进程
-
-* GET /getVideoProgress/{id}
-
-* return
-
-  ```json
-  {
-      "code": 0,
-      "message": "success!",
-      "data": "上传一个视频，类似这种信息"
-  }
-  ```
-
-  * 这个方法有待讨论
-
-
-
 ### 2.7 更新课时进度
+
+这个功能用来输入一个这次上课完成了几个课时，输入课时数，我进行修改
 
 * POST  /updateHours/{id}?increaseHours=4
 
@@ -296,26 +330,18 @@
 
 
 
-### 2.8 更新视频上传进程
 
-* 这个我们要再讨论一下，可以先放一下
+## 3. 签到Absence
 
+### 3.1 添加一个某个时间的未签到事件
 
-
-
-## 3. 签到
-
-### 3.1 添加一个某个时间的未签到事件 *
-
-**注意：这里只能添加一个未签到，之后实现多个添加**
+添加一个或者多个签到时候，参数传入的一定要是**班级id（classId）**
 
 后端会处理：如果传入的学生id不存在，报错：“不存在该学生信息，请先添加学生信息”，如果课程信息不存在，报错：“不存在该课程信息，请先添加该课程信息”
 
-* POST  /addAbsence
+* POST  /addAbsence?classId=1
 
-* payload:
-
-  token和
+* payload:  request
 
   ```json
   {
@@ -336,13 +362,13 @@
 
 
 
-### 3.2 批量添加签到记录 *
+### 3.2 批量添加签到记录 
 
-* POST  /addAbsences
+批量添加，可以试试故意添加不存在的课程，以便查看报错，找一下我的错误
 
-* payload:
+* POST  /addAbsences?classId=1
 
-  request + 
+* payload: request 
 
   ```json
   [
@@ -377,15 +403,14 @@
   }
   ```
 
-  
 
-### 3.3 删除一个签到记录  *
+### 3.3 删除一个签到记录 
 
 同时使该记录的学生的未签到记录减一
 
-* DELETE  /deleteAbsence?courseId=1&studentId=2018214505
+* DELETE  /deleteAbsence?courseId=1&studentId=2018214505&date=2020-3-4&classId=1
 
-* token userType = 1
+* request
 
 * return：
 
@@ -398,13 +423,13 @@
 
 
 
-### 3.4 获取某个时间点的课程签到情况 *
+## 下面的获取签到都是差不多的，返回值都类似(下面的返回值有可能和参数不是很相同，就是参考)，只有参数和意义上的不同，写几个后，其他的就省略着写了
 
-**仔细想有问题的，只能确定某日的，到具体时间就完了**
+### 3.4 获取某个时间点某同学的课程签到情况
 
-* GET  /getAbsence?id=1&date=2020-3-15
+* GET  /getAbsence?courseId=1&date=2020-3-15&studentId=2018231323
 
-* token 
+* request
 
 * return:
 
@@ -414,20 +439,19 @@
       "message": "success!",
       "data": {
           "createTime": "2020-03-15",
-          "studentId0": 2018214505,
-          "studentId1": 2018242434,
-          "absenceStudentNum": 2
+          "studentId": 2018214505,
+     		"courseId":2
       }
   }
   ```
 
-  **这里返回值有该签到的时间、未签到人数和未签到的id，id形式为 student+数字**
-
-### 3.5 获取指定某天的签到 *
+### 3.5 获取指定某天的签到 
 
 **指的是某一天所有的签到**
 
 * GET  /getAbsenceByDate?date=2020-3-15
+
+* request 
 
 * return：
 
@@ -437,10 +461,12 @@
       "message": "success!",
       "data": [
           {
+              "createTime": "2020-03-15",
               "studentId": 2018214505,
               "courseId": 1
           },
           {
+              "createTime": "2020-03-15",
               "studentId": 2018242434,
               "courseId": 1
           }
@@ -448,22 +474,158 @@
   }
   ```
 
-  **这里有问题的是：我暂时没想将相同课程id的信息合并到一起的方法，所以暂时返回json是这样的**
+### 3.6 获取指定课程id的（就是课程表上某一节）签到
 
-## 4.学生
+* GET  /getAbsenceByCourseId?courseId=1
+
+* request
+
+* return:
+
+  ```json
+  {
+      "code": 0,
+      "message": "success!",
+      "data": [
+          {
+              "createTime": "2020-03-15",
+              "studentId": 2018214505,
+              "courseId": 1
+          },
+          {
+              "createTime": "2020-03-15",
+              "studentId": 2018242434,
+              "courseId": 1
+          }
+      ]
+  }
+  ```
+
+### 3.7 获取某日、某节课的签到情况
+
+* GET /getAbsenceByDateAndCourseId?courseId=1&date=2020-3-3
+* request
+* return 。。。
+
+
+
+### 3.8 获取指定某节课某学生的签到情况
+
+* GET  /getAbsenceByCourseIdAndStudentId?courseId=1&studentId=2018212344
+* request
+
+### **这里如果有你想要的签到情况，但是我没写，或者有的get请求的获取信息不够，马上告诉我，我再想办法**
+
+### 3.9 添加坐标
+
+* POST  /addCoordinate
+
+* request
+
+  ```json
+  {
+  	"courseId":3,
+  	"x":3,
+  	"y":4
+  }
+  ```
+
+* return:
+
+  ```json
+  {
+      "code":0,
+      "message":"添加成功！"
+  }
+  ```
+
+### 3.10  删除指定坐标
+
+* POST  /deleteCoordinate?x=3&y=4&courseId=3
+
+* request
+
+* return
+
+  ```json
+  {
+      "code":0,
+      "message":"删除成功！"
+  }
+  ```
+
+
+
+### 3.11 修改坐标
+
+* POST  /updateCoordinate?x=2&y=3
+
+* request
+
+  **注意**：json里面穿的x、y是要修改的数据，param中传的是用来定位的x、y，而courseId是课程的，固定不变的。
+
+  ```json
+  {
+      "x":3,
+      "y":4,
+      "courseId":3
+  }
+  ```
+
+* return ：
+
+  ```json
+  {
+      "code":0,
+      "message":"修改成功!"
+  }
+  ```
+
+
+
+### 3.12 获取课程的课程表坐标
+
+* GET  /getCoordinate?courseId=3
+
+* request
+
+* return
+
+  ```json
+  {
+      "code": 0,
+      "message": "success!",
+      "data": [
+          {
+              "x": 3,
+              "y": 4,
+              "courseId": 3
+          },
+          {
+              "x": 5,
+              "y": 7,
+              "courseId": 3
+          }
+      ]
+  }
+  ```
+
+  
+
+## 4.学生Student
 
 ### 4.1 添加一个学生
 
-* POST  /addStudent
+* POST  /addStudent?classId=2  这里的classId就是这个班级id
 
-* token
-
-* payload：
+* payload  token
 
   ```json
   {
   	"studentId":2018216585,
-  	"studentName":"张思"
+   	"studentName":"张思",
+      "studentAbsenceTimes":0,
+      "classId":2
   }
   ```
 
@@ -476,11 +638,9 @@
   }
   ```
 
+### 4.2 修改指定id的学生信息
 
-
-### 4.2 删除指定id的学生
-
-* DELETE  /updateStudent?id=2018242434
+* DELETE  /updateStudent?id=2018242434?classId=2
 
 * token
 
@@ -506,7 +666,7 @@
 
 ### 4.3 获取指定id的学生信息
 
-* GET　/getStudentById?id=2018214505
+* GET　/getStudentById?studentId=2018214505&classId=2
 
 * token
 
@@ -519,6 +679,7 @@
       "data": {
           "studentId": 2018214505,
           "studentName": "bogdan",
+          "classId":2,
           "absenceTimes": 1
       }
   }
@@ -570,6 +731,162 @@
           },
           {
               "2019234678": "录入失败"
+          }
+      ]
+  }
+  ```
+
+  
+
+### 4.5 获取指定班级下的所有学生
+
+* GET  /getStudentByClassId?classId=1
+
+* request
+
+* return:
+
+  ```json
+  {
+      "code": 0,
+      "message": "success!",
+      "data": [
+          {
+              "studentId": 2018214343,
+              "studentName": "李四",
+              "absenceTimes": 0
+          },
+          {
+              "studentId": 2018214505,
+              "studentName": "张三",
+              "absenceTimes": 1
+          },
+          {
+              "studentId": 2018234232,
+              "studentName": "赵武",
+              "absenceTimes": 0
+          }
+      ]
+  }
+  ```
+
+
+
+## 5.班级Class
+
+## 5.1 添加一个班级
+
+* POST  /addClass
+
+* request
+
+  ```json
+  {
+  	"className":"计科二班",
+  	"userId":2,
+  	"classStudentNum":20 
+  }
+  ```
+
+* return 
+
+  ```json
+  {
+      "code": 0,
+      "message": "添加成功！"
+  }
+  ```
+
+
+
+### 5.2 修改指定班级
+
+* POST  /updateClass?classId=2
+
+* request
+
+  ```json
+  {
+  	"className":"计科三班",
+  	"classStudentNum":30
+  }
+  ```
+
+* return:
+
+  ```json
+  {
+      "code": 0,
+      "message": "修改成功！"
+  }
+  ```
+
+  
+
+### 5.3 删除指定id的班级
+
+* DELETE   /deleteById?classId=1&courseId=2
+
+* request
+
+* return:
+
+  ```json
+  {
+      "code": 1,
+      "message": "删除失败！"
+  }
+  ```
+
+
+
+### 5.4 获取指定班级的信息
+
+* GET  /getClassById?classId=2
+
+* request
+
+* return：
+
+  ```json
+  {
+      "code": 0,
+      "message": "success!",
+      "data": {
+          "classId": 1,
+          "classStudentName": 23,
+          "className": "计科2班",
+          "userId": 2
+      }
+  }
+  ```
+
+  
+
+### 5.5 获取指定用户id（指定老师）的所有班级信息
+
+* GET   /getClassesByUserId?userId=2
+
+* request
+
+* return:
+
+  ```json
+  {
+      "code": 0,
+      "message": "success!",
+      "data": [
+          {	
+              "classId": 1,
+              "userId": 2,
+              "classStudentName": 23,
+              "className": "计科2班"
+          },
+          {	
+              "classId": 1,
+              "userId": 2,
+              "classStudentName": 23,
+              "className": "计科2班"
           }
       ]
   }

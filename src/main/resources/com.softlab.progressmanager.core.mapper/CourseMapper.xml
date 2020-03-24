@@ -8,6 +8,10 @@
         <result property="courseFinishHours" column="cou_finish_hours"/>
         <result property="classId" column="class_id"/>
         <result property="courseIntroduction" column="cou_introduction"/>
+    </resultMap>
+    
+    <resultMap id="Coordinate" type="com.softlab.progressmanager.core.model.Coordinate">
+        <result property="courseId" column="cou_id"/>
         <result property="x" column="x"/>
         <result property="y" column="y"/>
     </resultMap>
@@ -15,11 +19,10 @@
     <insert id="insertCourse" parameterType="Course">
         insert into courses
         (cou_name, cou_introduction,cou_hours,
-        cou_finish_hours, class_id, x, y)
+        cou_finish_hours, class_id)
         values
         (#{courseName}, #{courseIntroduction},
-         #{courseHours},#{courseFinishHours},
-         #{classId}, #{x}, #{y})
+         #{courseHours},#{courseFinishHours},#{classId})
     </insert>
 
     <delete id="deleteCourseById">
@@ -38,12 +41,6 @@
             </if>
             <if test="course.courseIntroduction != null and '' != course.courseIntroduction">
                 cou_introduction = #{course.courseIntroduction},
-            </if>
-            <if test="course.x != null">
-                x = #{course.x},
-            </if>
-            <if test="course.y != null">
-                y = #{course.y}
             </if>
         </set>
         where cou_id = #{courseId}
@@ -71,4 +68,32 @@
         set cou_finish_hours = cou_finish_hours + #{increaseHours}
         where cou_id = #{courseId}
     </update>
+    
+    <insert id="insertCoordinate">
+        insert into coordinates 
+        (cou_id, x, y) 
+        values 
+        (#{courseId}, #{x}, #{y})
+    </insert>
+    
+    <delete id="deleteCoordinate">
+        delete from coordinates
+        where x = #{x}
+        and y = #{y}
+        and cou_id = #{courseId}
+    </delete>
+
+    <update id="updateCoordinate">
+        update coordinates
+        set x = #{coordinate.x},
+        y = #{coordinate.y}
+        where x = #{x}
+        and y = #{y}
+        and cou_id = #{coordinate.courseId}
+    </update>
+
+    <select id="selectCoordinateByCourseId" resultMap="Coordinate">
+        select * from coordinates
+        where cou_id = #{courseId}
+    </select>
 </mapper>

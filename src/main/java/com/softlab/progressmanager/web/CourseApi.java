@@ -4,8 +4,10 @@ import com.softlab.progressmanager.common.ProException;
 import com.softlab.progressmanager.common.RestData;
 import com.softlab.progressmanager.common.utils.JsonUtils;
 import com.softlab.progressmanager.common.utils.VerifyUtil;
+import com.softlab.progressmanager.core.model.Coordinate;
 import com.softlab.progressmanager.core.model.Course;
 import com.softlab.progressmanager.service.impl.CourseServiceImpl;
+import javafx.geometry.Pos;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -130,6 +132,71 @@ public class CourseApi {
 
         try {
             return courseService.updateFinishHours(increaseHours, id);
+        }catch (ProException ex){
+            return new RestData(1, ex.getMessage());
+        }
+    }
+
+    @PostMapping(value = "/addCoordinate")
+    public RestData addCoordinate(@RequestBody Coordinate coordinate,
+                                  HttpServletRequest request){
+        logger.info("add coordinate: " + JsonUtils.getJsonFromObj(coordinate));
+        if (VerifyUtil.verifyUserType(request) != 0) {
+            return new RestData(1,"用户未授权！");
+        }
+
+        try {
+            return courseService.insertCoordinate(coordinate);
+        }catch (ProException ex){
+            return new RestData(1, ex.getMessage());
+        }
+    }
+
+    @DeleteMapping(value = "/deleteCoordinate")
+    public RestData deleteCoordinate(@RequestParam("x") int x,
+                                     @RequestParam("y") int y,
+                                     @RequestParam("courseId") int courseId,
+                                     HttpServletRequest request){
+        logger.info("delete coordinate");
+        if (VerifyUtil.verifyUserType(request) != 0) {
+            return new RestData(1,"用户未授权！");
+        }
+
+        try {
+            return courseService.deleteCoordinate(x, y, courseId);
+        }catch (ProException ex){
+            return new RestData(1, ex.getMessage());
+        }
+    }
+
+    @PostMapping(value = "/updateCoordinate")
+    public RestData updateCoordinate(@RequestBody Coordinate coordinate,
+                                     @RequestParam("x") int x,
+                                     @RequestParam("y") int y,
+                                  HttpServletRequest request){
+        logger.info("update coordinate: " + JsonUtils.getJsonFromObj(coordinate));
+        if (VerifyUtil.verifyUserType(request) != 0) {
+            return new RestData(1,"用户未授权！");
+        }
+
+        try {
+            return courseService.updateCoordinate(x, y , coordinate);
+        }catch (ProException ex){
+            return new RestData(1, ex.getMessage());
+        }
+    }
+
+    @GetMapping(value = "/getCoordinate")
+    public RestData getCoordinate(@RequestParam("courseId") int courseId,
+                                  HttpServletRequest request){
+        logger.info("get coordinate by id :" + courseId);
+
+        if (VerifyUtil.verifyUserType(request) != 0) {
+            return new RestData(1, "用户未授权！");
+        }
+
+        try {
+            return new RestData(courseService.selectCoordinateByCourseId(courseId));
         }catch (ProException ex){
             return new RestData(1, ex.getMessage());
         }

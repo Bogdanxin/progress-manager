@@ -42,13 +42,4 @@ public class Course {
      */
     private int classId;
 
-    /**
-     * 用于定位x轴
-     */
-    private int x;
-
-    /**
-     * 用于定位y轴
-     */
-    private int y;
 }
