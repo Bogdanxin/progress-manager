@@ -885,7 +885,7 @@ user重要的请求就三个 login  register   exit
           {	
               "classId": 1,
               "userId": 2,
-              "classStudentName": 23,
+              "classStudentName": 23 ,
               "className": "计科2班"
           }
       ]
