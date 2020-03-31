@@ -62,7 +62,7 @@ public class CourseServiceImpl implements CourseService {
     public List<Map<String, Object>> selectCourseByClassId(int classId) throws ProException {
         List<Map<String, Object>> al = new ArrayList<>();
         List<Course> courses = courseMapper.selectCourseByClassId(classId);
-        if (courses != null) {
+        if (courses != null && courses.size() > 0) {
             for (Course course : courses){
                 Map<String, Object> map = new HashMap<>(6);
                 map.put("courseId", course.getCourseId());
@@ -156,9 +156,9 @@ public class CourseServiceImpl implements CourseService {
     public List<Map<String, Object>> selectCoordinateByCourseId(int courseId) throws ProException {
         List<Map<String, Object>> al = new ArrayList<>();
         List<Coordinate> coordinates = courseMapper.selectCoordinateByCourseId(courseId);
-        if (coordinates != null) {
+        if (coordinates != null && coordinates.size() > 0) {
             for (Coordinate coordinate : coordinates){
-                Map<String, Object> map = new HashMap<>();
+                Map<String, Object> map = new HashMap<>(3);
                 map.put("x", coordinate.getX());
                 map.put("y", coordinate.getY());
                 map.put("courseId", coordinate.getCourseId());

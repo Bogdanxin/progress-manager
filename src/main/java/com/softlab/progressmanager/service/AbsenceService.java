@@ -79,7 +79,7 @@ public interface AbsenceService {
      * @return
      * @throws ProException
      */
-    List<Map<String, Object>> selectAbsenceByDateAndCourseId(int courseId, String date) throws ProException;
+    List<Map<String, Object>> selectAbsenceByDateAndCourseId(int courseId, String date, int classId) throws ProException;
 
     /**
      * 查看指定学生某课程的签到情况
@@ -88,6 +88,6 @@ public interface AbsenceService {
      * @return
      * @throws ProException
      */
-    List<Map<String, Object>> selectAbsenceStudent(int courseId, int studentId) throws ProException;
+    List<Map<String, Object>> selectAbsenceStudent(int courseId, int studentId, int classId) throws ProException;
 
 }

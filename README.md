@@ -165,9 +165,7 @@ user重要的请求就三个 login  register   exit
   	"courseIntroduction":"课程简介",
   	"courseHours":43,
   	"courseFinishHours":0,
-  	"userId":3,
-     	"x":3,
-      "y":4
+  	"classId": 2
   }
   ```
 
@@ -246,8 +244,7 @@ user重要的请求就三个 login  register   exit
           "courseHours":43,
           "courseFinishHours":0,
           "userId":3,
-          "x":3,
-          "y":4
+          "classId": 2
       }
   }
   ```
@@ -273,8 +270,8 @@ user重要的请求就三个 login  register   exit
               "courseHours":43,
               "courseFinishHours":4,
               "userId":3,
-              "x":3,
-              "y":4
+              "courseId": 1,
+              "classId": 3
       	},
           {
               "courseName":"java",
@@ -282,8 +279,8 @@ user重要的请求就三个 login  register   exit
               "courseHours":33,
               "courseFinishHours":0,
               "userId":3,
-              "x":3,
-              "y":4
+              "courseId": 23,
+              "classId": 3
       	}
        ]
   }
@@ -440,7 +437,7 @@ user重要的请求就三个 login  register   exit
       "data": {
           "createTime": "2020-03-15",
           "studentId": 2018214505,
-     		"courseId":2
+     	  "courseId":2
       }
   }
   ```
@@ -885,7 +882,7 @@ user重要的请求就三个 login  register   exit
           {	
               "classId": 1,
               "userId": 2,
-              "classStudentName": 23 ,
+              "classStudentName": 23,
               "className": "计科2班"
           }
       ]

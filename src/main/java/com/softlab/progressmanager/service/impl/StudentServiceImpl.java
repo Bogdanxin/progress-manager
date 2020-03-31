@@ -114,7 +114,7 @@ public class StudentServiceImpl implements StudentService {
     public List<Map<String, Object>> selectStudentsByClassId(int classId) throws ProException {
         List<Map<String, Object>> al = new ArrayList<>();
         List<Student> students = studentMapper.selectStudentsByClassId(classId);
-        if (students != null) {
+        if (students != null && students.size() > 0) {
             for (Student student : students){
                 Map<String, Object> map = new HashMap<>();
                 map.put("studentId",student.getStudentId());

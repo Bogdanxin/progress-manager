@@ -140,6 +140,7 @@ public class AbsenceApi {
     @GetMapping(value = "/getAbsenceByDateAndCourseId")
     public RestData getAbsenceByDateAndCourseId(@RequestParam("courseId") int courseId,
                                                 @RequestParam("date") String date,
+                                                @RequestParam("classId") int classId,
                                                 HttpServletRequest request){
 
         logger.info("get absence by course id : " + courseId + "and date:" + date);
@@ -150,7 +151,7 @@ public class AbsenceApi {
 
         try {
             return new RestData
-                    (absenceService.selectAbsenceByDateAndCourseId(courseId, date));
+                    (absenceService.selectAbsenceByDateAndCourseId(courseId, date, classId));
         }catch (ProException ex){
             return new RestData(1,ex.getMessage());
         }
@@ -160,6 +161,7 @@ public class AbsenceApi {
     public RestData getAbsenceByCourseIdAndStudentId
             (@RequestParam("courseId") int courseId,
              @RequestParam("studentId") int studentId,
+             @RequestParam("classId") int classId,
              HttpServletRequest request){
 
         logger.info("get absence by course id : " + courseId + "and student id :" + studentId);
@@ -169,7 +171,7 @@ public class AbsenceApi {
 
         try {
             return new RestData
-                    (absenceService.selectAbsenceStudent(courseId, studentId));
+                    (absenceService.selectAbsenceStudent(courseId, studentId, classId));
         }catch (ProException ex){
             return new RestData(1,ex.getMessage());
         }

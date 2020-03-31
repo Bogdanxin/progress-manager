@@ -84,7 +84,7 @@ public class UserServiceImpl implements UserService {
     public List<Map<String, Object>> selectUsersByCondition(User user1) throws ProException {
         List<Map<String, Object>> al = new ArrayList<>();
         List<User> users = userMapper.selectUsersByCondition(user1);
-        if (users != null) {
+        if (users != null && users.size() > 0) {
             for (User user : users){
                 Map<String, Object> map = new HashMap<>(6);
                 map.put("userId", user.getUserId());

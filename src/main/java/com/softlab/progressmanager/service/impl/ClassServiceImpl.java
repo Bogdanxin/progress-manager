@@ -80,7 +80,7 @@ public class ClassServiceImpl implements ClassService {
     public List<Map<String, Object>> selectClassByUserId(int userId) throws ProException {
         List<Map<String, Object>> al = new ArrayList<>();
         List<CClass> cClasses = classMapper.selectClassByUserId(userId);
-        if (cClasses != null) {
+        if (cClasses != null && cClasses.size() > 0) {
             for (CClass cClass : cClasses){
                 Map<String, Object> map = new HashMap<>();
                 map.put("classId", cClass.getClassId());

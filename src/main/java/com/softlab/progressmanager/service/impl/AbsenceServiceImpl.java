@@ -108,7 +108,7 @@ public class AbsenceServiceImpl implements AbsenceService {
         Map<String , Object> map = new HashMap<>();
         Absence absence = absenceMapper.
                 selectByDateAndStudentIdAndCourseId(studentId, courseId, date);
-        if (absence != null) {
+        if (absence != null ) {
             map.put("studentId", absence.getStudentId());
             map.put("courseId",absence.getCourseId());
             map.put("createTime", absence.getCreateTime());
@@ -124,7 +124,7 @@ public class AbsenceServiceImpl implements AbsenceService {
         List<Map<String, Object>> al = new ArrayList<>();
 
         List<Absence> absences = absenceMapper.selectAbsenceByDate(date);
-        if (absences != null) {
+        if (absences != null && absences.size() > 0) {
             for (Absence absence : absences){
                 Map<String, Object> map = new HashMap<>();
                 map.put("studentId",absence.getStudentId());
@@ -145,7 +145,7 @@ public class AbsenceServiceImpl implements AbsenceService {
 
         List<Absence> absences = absenceMapper.selectAbsenceByCourseId(courseId);
 
-        if (absences != null) {
+        if (absences != null && absences.size() > 0) {
             for (Absence absence : absences){
                 Map<String, Object> map = new HashMap<>();
                 map.put("studentId",absence.getStudentId());
@@ -161,16 +161,17 @@ public class AbsenceServiceImpl implements AbsenceService {
     }
 
     @Override
-    public List<Map<String, Object>> selectAbsenceByDateAndCourseId(int courseId, String date) throws ProException {
+    public List<Map<String, Object>> selectAbsenceByDateAndCourseId(int courseId, String date, int classId) throws ProException {
         List<Map<String, Object>> al = new ArrayList<>();
 
         List<Absence> absences = absenceMapper.selectAbsenceByDateAndCourseId(courseId, date);
-        if (absences != null) {
+        if (absences != null && absences.size() > 0) {
             for (Absence absence : absences){
                 Map<String, Object> map = new HashMap<>();
                 map.put("studentId",absence.getStudentId());
                 map.put("courseId", absence.getCourseId());
                 map.put("createTime", absence.getCreateTime());
+                map.put("studentName", studentMapper.selectStudentById(absence.getStudentId(), classId).getStudentName());
                 al.add(map);
             }
         }else {
@@ -181,16 +182,17 @@ public class AbsenceServiceImpl implements AbsenceService {
     }
 
     @Override
-    public List<Map<String, Object>> selectAbsenceStudent(int courseId, int studentId) throws ProException {
+    public List<Map<String, Object>> selectAbsenceStudent(int courseId, int studentId, int classId) throws ProException {
         List<Map<String, Object>> al = new ArrayList<>();
 
-        List<Absence> absences = absenceMapper.selectAbsenceStudent(courseId, studentId);
-        if (absences != null) {
+        List<Absence> absences = absenceMapper.selectAbsenceStudent(studentId, courseId);
+        if (absences != null && absences.size() > 0) {
             for (Absence absence : absences){
-                Map<String, Object> map = new HashMap<>();
+                Map<String, Object> map = new HashMap<>(4);
                 map.put("studentId",absence.getStudentId());
                 map.put("courseId", absence.getCourseId());
                 map.put("createTime", absence.getCreateTime());
+                map.put("studentName", studentMapper.selectStudentById(studentId, classId).getStudentName());
                 al.add(map);
             }
         }else {
